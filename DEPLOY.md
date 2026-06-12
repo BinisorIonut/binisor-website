@@ -1,5 +1,6 @@
 # Deploying binisor.com
 
+
 GitHub Pages serves the static build, Cloudflare hosts the DNS. One-time setup
 takes about 30 minutes; subsequent updates happen automatically on every
 `git push` to `main`.
