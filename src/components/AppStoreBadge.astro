@@ -1,0 +1,29 @@
+---
+interface Props {
+  href?: string;
+  label?: string;
+}
+
+const {
+  href = "#",
+  label = "Download on the Mac App Store",
+} = Astro.props;
+
+const isPlaceholder = href === "#";
+---
+
+<a
+  href={href}
+  class:list={[
+    "inline-flex items-center gap-3 rounded-xl border border-(--color-border) bg-(--color-surface) px-5 py-3 text-sm font-medium text-(--color-fg) no-underline transition hover:border-(--color-fg)/40 hover:no-underline",
+    isPlaceholder && "pointer-events-none opacity-60",
+  ]}
+  aria-disabled={isPlaceholder}
+>
+  <svg aria-hidden="true" viewBox="0 0 24 24" class="h-5 w-5 fill-current">
+    <path
+      d="M16.365 1.43c0 1.14-.42 2.22-1.18 3.02-.84.88-2.22 1.56-3.32 1.48-.14-1.1.42-2.26 1.18-3.04.84-.86 2.32-1.5 3.32-1.46zM20.5 17.16c-.56 1.28-.82 1.84-1.54 2.96-1 1.58-2.4 3.56-4.14 3.58-1.56.02-1.96-1.02-4.06-1.02-2.1.02-2.54 1.04-4.1 1.02-1.74-.04-3.06-1.82-4.06-3.4-2.78-4.4-3.08-9.56-1.36-12.3 1.2-1.92 3.1-3.04 4.88-3.04 1.82 0 2.96 1 4.46 1 1.46 0 2.34-1 4.44-1 1.58 0 3.26.86 4.46 2.34-3.92 2.16-3.28 7.78.42 8.86z"
+    />
+  </svg>
+  {label}
+</a>

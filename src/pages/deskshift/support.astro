@@ -1,0 +1,174 @@
+---
+import Base from "../../layouts/Base.astro";
+
+// TODO: replace with your Web3Forms access key.
+// Sign up free at https://web3forms.com (no account needed — just verify your email).
+// The key is safe to commit publicly — it's per-form and rate-limited.
+const WEB3FORMS_ACCESS_KEY = "YOUR_WEB3FORMS_ACCESS_KEY";
+
+const faqs = [
+  {
+    q: "Which desks does DeskShift work with?",
+    a: "Any standing desk based on the Linak Bluetooth protocol. The IKEA IDÅSEN line is the primary target. Other Linak-based desks generally work too, but compatibility is best-effort. If your desk has a Bluetooth dongle and a Linak controller, give it a try.",
+  },
+  {
+    q: "Does DeskShift run on iPhone or iPad?",
+    a: "No. DeskShift is macOS only at launch. macOS 26.2 or later is required.",
+  },
+  {
+    q: "Why do I need to sign in to iCloud?",
+    a: "DeskShift uses iCloud to sync your desks, presets, and preferences across your Macs, and to anchor your 14-day Pro trial so it doesn't restart when you reinstall. Your data lives in your own private container — I cannot see it.",
+  },
+  {
+    q: "Is the trial automatic?",
+    a: "Yes. Every new install gets full Pro features for 14 days. No card, no account, no email asked.",
+  },
+  {
+    q: "How do I get a refund?",
+    a: "Refunds are handled by Apple, not by me. Open Settings → Apple ID → Media & Purchases → Account Settings → Purchase History on your Mac, find DeskShift, and request a refund directly through Apple.",
+  },
+  {
+    q: "Where can I report a bug or request a feature?",
+    a: "Use the form below, or email binisor.ionut@gmail.com directly. I read every message.",
+  },
+];
+---
+
+<Base
+  title="DeskShift — Support"
+  description="Get help with DeskShift. FAQ, troubleshooting, and a direct line to the developer."
+>
+  <section class="space-y-4">
+    <h1 class="text-3xl font-semibold tracking-tight sm:text-4xl">Support</h1>
+    <p class="text-lg text-(--color-muted)">
+      DeskShift is built by one person. Send a message and you'll hear back from
+      me directly.
+    </p>
+  </section>
+
+  <!-- FAQ -->
+  <section class="mt-16">
+    <h2 class="text-2xl font-semibold tracking-tight">Frequently asked</h2>
+    <div class="mt-6 space-y-6">
+      {
+        faqs.map((item) => (
+          <details class="group rounded-xl border border-(--color-border) bg-(--color-surface) px-5 py-4 [&_summary::-webkit-details-marker]:hidden">
+            <summary class="flex cursor-pointer items-start justify-between gap-4 list-none">
+              <span class="font-medium">{item.q}</span>
+              <span
+                class="mt-1 text-(--color-muted) transition group-open:rotate-45"
+                aria-hidden="true"
+              >
+                +
+              </span>
+            </summary>
+            <p class="mt-3 text-(--color-muted)">{item.a}</p>
+          </details>
+        ))
+      }
+    </div>
+  </section>
+
+  <!-- Contact form -->
+  <section class="mt-16">
+    <h2 class="text-2xl font-semibold tracking-tight">Get in touch</h2>
+    <p class="mt-2 text-(--color-muted)">
+      Everything goes straight to my inbox. I usually reply within 1–2
+      business days.
+    </p>
+
+    <form
+      action="https://api.web3forms.com/submit"
+      method="POST"
+      class="mt-8 space-y-5"
+    >
+      <input type="hidden" name="access_key" value={WEB3FORMS_ACCESS_KEY} />
+      <input type="hidden" name="subject" value="DeskShift support — new message" />
+      <input
+        type="hidden"
+        name="redirect"
+        value="https://binisor.com/deskshift/support?sent=1"
+      />
+      <!-- Honeypot anti-spam (Web3Forms ignores submissions where this is filled). -->
+      <input
+        type="checkbox"
+        name="botcheck"
+        class="hidden"
+        tabindex="-1"
+        autocomplete="off"
+      />
+
+      <div class="grid gap-5 sm:grid-cols-2">
+        <label class="block">
+          <span class="text-sm font-medium">Your name</span>
+          <input
+            type="text"
+            name="name"
+            required
+            autocomplete="name"
+            class="mt-2 w-full rounded-xl border border-(--color-border) bg-(--color-surface) px-4 py-3 text-base outline-none transition focus:border-(--color-accent)"
+          />
+        </label>
+        <label class="block">
+          <span class="text-sm font-medium">Your email</span>
+          <input
+            type="email"
+            name="email"
+            required
+            autocomplete="email"
+            class="mt-2 w-full rounded-xl border border-(--color-border) bg-(--color-surface) px-4 py-3 text-base outline-none transition focus:border-(--color-accent)"
+          />
+        </label>
+      </div>
+
+      <label class="block">
+        <span class="text-sm font-medium">What can I help with?</span>
+        <select
+          name="topic"
+          class="mt-2 w-full rounded-xl border border-(--color-border) bg-(--color-surface) px-4 py-3 text-base outline-none transition focus:border-(--color-accent)"
+        >
+          <option>Bug report</option>
+          <option>Feature request</option>
+          <option>Question about compatibility</option>
+          <option>Purchase / refund / receipt</option>
+          <option>Other</option>
+        </select>
+      </label>
+
+      <label class="block">
+        <span class="text-sm font-medium">Message</span>
+        <textarea
+          name="message"
+          rows="6"
+          required
+          class="mt-2 w-full rounded-xl border border-(--color-border) bg-(--color-surface) px-4 py-3 text-base outline-none transition focus:border-(--color-accent)"
+        ></textarea>
+      </label>
+
+      <button
+        type="submit"
+        class="inline-flex items-center rounded-xl bg-(--color-accent) px-6 py-3 text-base font-medium text-white transition hover:opacity-90"
+      >
+        Send message
+      </button>
+    </form>
+
+    <p class="mt-6 text-sm text-(--color-muted)">
+      Form delivery powered by <a href="https://web3forms.com" rel="noopener">Web3Forms</a>.
+      Your message and email address are forwarded to my inbox and not stored
+      elsewhere.
+    </p>
+  </section>
+</Base>
+
+<script is:inline>
+  // Friendly thank-you when the form posts back with ?sent=1
+  if (typeof window !== "undefined" && location.search.includes("sent=1")) {
+    const banner = document.createElement("div");
+    banner.textContent = "Thanks — your message is on its way.";
+    banner.style.cssText =
+      "position:fixed;top:1rem;left:50%;transform:translateX(-50%);background:var(--color-accent);color:#fff;padding:0.75rem 1.25rem;border-radius:0.75rem;font-size:0.95rem;z-index:50;box-shadow:0 8px 24px rgba(0,0,0,0.15);";
+    document.body.appendChild(banner);
+    setTimeout(() => banner.remove(), 5000);
+  }
+</script>

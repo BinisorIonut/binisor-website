@@ -1,0 +1,27 @@
+---
+const path = Astro.url.pathname;
+const isHome = path === "/";
+---
+
+<header class="border-b border-(--color-border)/60">
+  <nav class="mx-auto flex max-w-3xl items-center justify-between px-6 py-4">
+    <a
+      href="/"
+      class="font-semibold tracking-tight text-(--color-fg) no-underline hover:no-underline"
+      aria-current={isHome ? "page" : undefined}
+    >
+      binisor
+    </a>
+    <ul class="flex items-center gap-6 text-sm">
+      <li>
+        <a
+          href="/deskshift"
+          class="text-(--color-muted) no-underline hover:text-(--color-fg) hover:no-underline"
+          aria-current={path.startsWith("/deskshift") ? "page" : undefined}
+        >
+          DeskShift
+        </a>
+      </li>
+    </ul>
+  </nav>
+</header>

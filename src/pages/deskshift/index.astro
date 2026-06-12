@@ -1,0 +1,169 @@
+---
+import Base from "../../layouts/Base.astro";
+import AppStoreBadge from "../../components/AppStoreBadge.astro";
+
+const pillars = [
+  {
+    title: "Health first",
+    body: "Calm reminders and a Posture Coach that helps you move more without nagging.",
+  },
+  {
+    title: "Comfort & ergonomics",
+    body: "Tap, shortcut, or voice — no more holding a button on the side of your desk.",
+  },
+  {
+    title: "Native Mac feel",
+    body: "Menu bar, SF Symbols, iCloud sync. Zero third-party dependencies.",
+  },
+  {
+    title: "Privacy by design",
+    body: "No account, no analytics, no servers. Bluetooth talks only to your desk.",
+  },
+];
+
+const features = [
+  "Manual up/down controls from the menu bar",
+  "Sit and Stand memory presets with unlimited custom variants (Pro)",
+  "Posture Coach reminders and optional automatic desk movement (Pro)",
+  "Global keyboard shortcuts per preset (Pro)",
+  'Voice control: "Hey Siri, move my desk to Standing" (Pro)',
+  "Spotlight and Shortcuts app integration for automations (Pro)",
+  "iCloud sync of presets and preferences across all your Macs (Pro)",
+];
+
+type Cell = boolean | "—";
+const matrix: Array<{ feature: string; free: Cell; pro: Cell }> = [
+  { feature: "Manual up/down (hold to move)", free: true, pro: true },
+  { feature: "Sit & Stand memory positions (2 fixed slots)", free: true, pro: true },
+  { feature: "Notifications to switch positions", free: true, pro: true },
+  { feature: "Launch at login", free: true, pro: true },
+  { feature: "Auto-reconnect to the last paired desk", free: true, pro: true },
+  { feature: "Up to 12 custom memory positions", free: false, pro: true },
+  { feature: "Menu bar variants (icon / value / icon + value)", free: false, pro: true },
+  { feature: "Live height in the menu bar", free: false, pro: true },
+  { feature: "Global keyboard shortcuts", free: false, pro: true },
+  { feature: "Desk button double-tap gesture", free: false, pro: true },
+  { feature: "Posture Coach automatic movement", free: false, pro: true },
+  { feature: "Siri voice control", free: false, pro: true },
+  { feature: "Spotlight search for presets", free: false, pro: true },
+  { feature: "Shortcuts app integration", free: false, pro: true },
+  { feature: "iCloud sync across Macs", free: false, pro: true },
+  { feature: "Multi-desk support", free: false, pro: true },
+  { feature: "Lifetime feature parity (future Pro features included)", free: "—", pro: true },
+];
+---
+
+<Base
+  title="DeskShift — Your desk, in the menu bar"
+  description="A calm, Mac-native menu-bar app for IKEA IDÅSEN and Linak Bluetooth standing desks. One price. Lifetime."
+>
+  <!-- Hero -->
+  <section class="space-y-6">
+    <p class="text-sm font-medium tracking-wide text-(--color-accent) uppercase">
+      DeskShift for macOS
+    </p>
+    <h1 class="text-4xl leading-tight font-semibold tracking-tight sm:text-5xl">
+      Your desk, in the menu bar.<br />
+      <span class="text-(--color-muted)">Move with a tap.</span>
+    </h1>
+    <p class="max-w-xl text-lg text-(--color-muted)">
+      Helps you adjust your posture at the right time. Stay in flow.
+    </p>
+
+    <div class="flex flex-wrap items-center gap-4 pt-2">
+      <AppStoreBadge />
+      <a href="#features" class="text-sm">Learn more →</a>
+    </div>
+
+    <p class="pt-1 text-xs text-(--color-muted)">
+      For IKEA IDÅSEN &amp; other Linak-based Bluetooth desks. macOS 26.2 or
+      later.
+    </p>
+  </section>
+
+  <!-- Pillars -->
+  <section class="mt-20 grid gap-8 sm:grid-cols-2">
+    {
+      pillars.map((p) => (
+        <div>
+          <h3 class="text-base font-semibold tracking-tight">{p.title}</h3>
+          <p class="mt-2 text-(--color-muted)">{p.body}</p>
+        </div>
+      ))
+    }
+  </section>
+
+  <!-- Feature list -->
+  <section id="features" class="mt-20">
+    <h2 class="text-2xl font-semibold tracking-tight">What you get</h2>
+    <ul class="mt-6 space-y-3 text-base leading-relaxed">
+      {
+        features.map((f) => (
+          <li class="flex gap-3">
+            <span class="text-(--color-accent)" aria-hidden="true">
+              •
+            </span>
+            <span>{f}</span>
+          </li>
+        ))
+      }
+    </ul>
+  </section>
+
+  <!-- Free vs Pro -->
+  <section class="mt-20">
+    <h2 class="text-2xl font-semibold tracking-tight">Free vs Pro</h2>
+    <p class="mt-2 text-(--color-muted)">
+      One price. One time. Yours forever.
+      <span class="block sm:inline">
+        Every new install starts with a 14-day full-Pro trial — no card, no
+        account.
+      </span>
+    </p>
+
+    <div class="mt-6 overflow-x-auto rounded-2xl border border-(--color-border)">
+      <table class="w-full text-sm">
+        <thead class="bg-(--color-bg) text-left">
+          <tr>
+            <th class="px-4 py-3 font-medium">Feature</th>
+            <th class="px-4 py-3 text-center font-medium">Free</th>
+            <th class="px-4 py-3 text-center font-medium">Pro</th>
+          </tr>
+        </thead>
+        <tbody>
+          {
+            matrix.map((row) => (
+              <tr class="border-t border-(--color-border)/60">
+                <td class="px-4 py-3">{row.feature}</td>
+                <td class="px-4 py-3 text-center">
+                  {row.free === true ? "✓" : row.free === "—" ? "—" : ""}
+                </td>
+                <td class="px-4 py-3 text-center">
+                  {row.pro === true ? "✓" : row.pro === "—" ? "—" : ""}
+                </td>
+              </tr>
+            ))
+          }
+        </tbody>
+      </table>
+    </div>
+
+    <p class="mt-6 text-base">
+      <span class="font-semibold">Pro is a one-time purchase — $19.99 USD.</span>
+      No subscription, no upsells. Every Pro feature today, and every Pro
+      feature added later, stays unlocked on every Mac signed in to your Apple
+      ID.
+    </p>
+  </section>
+
+  <!-- CTA -->
+  <section class="mt-20 rounded-2xl border border-(--color-border) bg-(--color-surface) p-8 text-center">
+    <h2 class="text-2xl font-semibold tracking-tight">Try DeskShift</h2>
+    <p class="mx-auto mt-2 max-w-md text-(--color-muted)">
+      Full Pro free for 14 days. No card. No account. No email.
+    </p>
+    <div class="mt-6 flex justify-center">
+      <AppStoreBadge />
+    </div>
+  </section>
+</Base>

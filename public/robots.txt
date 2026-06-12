@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://binisor.com/sitemap-index.xml

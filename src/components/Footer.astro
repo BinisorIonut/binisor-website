@@ -1,0 +1,37 @@
+---
+const year = new Date().getFullYear();
+---
+
+<footer class="border-t border-(--color-border)/60">
+  <div
+    class="mx-auto flex max-w-3xl flex-col gap-4 px-6 py-8 text-sm text-(--color-muted) sm:flex-row sm:items-center sm:justify-between"
+  >
+    <p>© {year} Binisor Ionut</p>
+    <ul class="flex flex-wrap gap-6">
+      <li>
+        <a
+          href="/deskshift/privacy"
+          class="text-(--color-muted) no-underline hover:text-(--color-fg) hover:no-underline"
+        >
+          Privacy
+        </a>
+      </li>
+      <li>
+        <a
+          href="/deskshift/terms"
+          class="text-(--color-muted) no-underline hover:text-(--color-fg) hover:no-underline"
+        >
+          Terms
+        </a>
+      </li>
+      <li>
+        <a
+          href="/deskshift/support"
+          class="text-(--color-muted) no-underline hover:text-(--color-fg) hover:no-underline"
+        >
+          Support
+        </a>
+      </li>
+    </ul>
+  </div>
+</footer>

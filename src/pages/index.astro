@@ -1,0 +1,70 @@
+---
+import Base from "../layouts/Base.astro";
+
+const LINKEDIN_URL = "https://www.linkedin.com/in/ionut-aurel-binisor-0418b4133/";
+const GITHUB_URL = "https://github.com/BinisorIonut";
+---
+
+<Base
+  title="Ionut Binisor — iOS &amp; macOS developer"
+  description="Senior iOS developer in Bucharest. Building DeskShift, a calm Mac-native standing-desk app."
+>
+  <section class="space-y-6">
+    <h1 class="text-3xl font-semibold tracking-tight sm:text-4xl">
+      Ionut Binisor
+    </h1>
+    <p class="text-lg text-(--color-muted)">
+      iOS &amp; macOS developer. Bucharest, Romania.
+    </p>
+
+    <div class="space-y-4 pt-2 text-base leading-relaxed">
+      <p>
+        I've been writing Swift since 2017 — UIKit when I had to, SwiftUI ever
+        since I could. By day I work on consumer iOS apps; on the side, I
+        build small, focused Mac apps that respect your time, your attention,
+        and your privacy.
+      </p>
+      <p>
+        No accounts, no analytics, no dashboards — just software that does one
+        thing and gets out of the way. I'm currently working on
+        <a href="/deskshift">DeskShift</a>, a menu-bar app for standing desks.
+      </p>
+    </div>
+
+    <ul class="flex flex-wrap gap-x-6 gap-y-2 pt-4 text-sm">
+      <li>
+        <a href={LINKEDIN_URL} target="_blank" rel="noopener">LinkedIn ↗</a>
+      </li>
+      <li>
+        <a href={GITHUB_URL} target="_blank" rel="noopener">GitHub ↗</a>
+      </li>
+      <li>
+        <a href="/deskshift/support">Contact</a>
+      </li>
+    </ul>
+  </section>
+
+  <section class="mt-16 border-t border-(--color-border)/60 pt-12">
+    <h2 class="mb-6 text-sm font-semibold tracking-wide text-(--color-muted) uppercase">
+      Current project
+    </h2>
+
+    <a
+      href="/deskshift"
+      class="block rounded-2xl border border-(--color-border) bg-(--color-surface) p-6 no-underline transition hover:border-(--color-fg)/40 hover:no-underline"
+    >
+      <div class="flex items-start justify-between gap-4">
+        <div>
+          <h3 class="text-xl font-semibold text-(--color-fg)">DeskShift</h3>
+          <p class="mt-1 text-(--color-muted)">
+            Your desk, in the menu bar. Move with a tap.
+          </p>
+          <p class="mt-4 text-sm text-(--color-muted)">
+            macOS · IKEA IDÅSEN &amp; Linak desks · One-time purchase
+          </p>
+        </div>
+        <span class="text-(--color-muted)" aria-hidden="true">→</span>
+      </div>
+    </a>
+  </section>
+</Base>
