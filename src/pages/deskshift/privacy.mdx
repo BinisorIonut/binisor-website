@@ -1,21 +1,21 @@
 ---
 layout: ../../layouts/Base.astro
 title: "DeskShift — Privacy Policy"
-description: "DeskShift doesn't track you or run analytics. The only data it ever sends is the feedback you choose to submit. Everything else stays on your device and in your own private iCloud."
+description: "DeskShift doesn't track you or run analytics. It collects nothing on its own — the only data it ever sends is the feedback you choose to submit and an anonymous daily App Store version check. Everything else stays on your device and in your own private iCloud."
 ---
 
 <div class="prose-content space-y-6 text-base leading-relaxed">
 
 # DeskShift — Privacy Policy
 
-<p class="text-sm text-(--color-muted)">Last updated: 2026-06-12</p>
+<p class="text-sm text-(--color-muted)">Last updated: 2026-06-17</p>
 
 ## In short
 
-- I don't run analytics, telemetry, or tracking of any kind — ever.
-- The app collects nothing on its own. The only data that ever leaves your device is what you choose to send me through the feedback form (your message, and optionally your email).
-- I don't sell your data or use it for advertising or profiling.
-- Your desks, presets, and settings stay on your device and in your own private iCloud container.
+- I don't collect personal information automatically.
+- I don't run analytics, telemetry, or tracking of any kind.
+- I use Google Forms only when you explicitly send feedback or tap a "Love it" review button.
+- Your desks, presets, settings, trial state, and small review-prompt counters stay on your device and, when iCloud is available, in your own private iCloud container.
 - Bluetooth talks only to your desk — never to me.
 
 That's the whole story. The sections below are the long version.
@@ -28,7 +28,7 @@ DeskShift is sold through the **App Store**. Apple, not me, handles your payment
 
 ## What DeskShift stores and syncs via iCloud
 
-DeskShift requires iCloud. Your data lives on your device using Apple's SwiftData framework and is automatically synced to **your own private iCloud container** using Apple's CloudKit, so it stays in step across every device signed in to your Apple ID.
+DeskShift stores app data on your device using Apple's SwiftData framework. When iCloud is available, that data syncs to **your own private iCloud container** using Apple's CloudKit, so it stays in step across every Mac signed in to your Apple ID. If iCloud is unavailable, DeskShift falls back to local-only storage on that Mac.
 
 DeskShift stores and syncs the following:
 
@@ -36,6 +36,8 @@ DeskShift stores and syncs the following:
 - Your presets (name, icon, target height, keyboard shortcut).
 - Your preferences (units, appearance, language, menu bar style, Posture Coach settings, gesture toggles).
 - A small amount of runtime state for the Posture Coach (your last detected position and the timestamp it changed).
+- Your Pro trial anchor — the first-launch date, plus the App Store-signed download date once StoreKit provides it, used to count the 14-day trial so it doesn't restart when you reinstall or set up another Mac. **No purchase record is stored or synced**; StoreKit alone is the authority for whether you've bought Pro.
+- Review-prompt counters, such as total desk moves, distinct active days, last prompt date, and whether you already responded positively. These are used only to avoid asking for reviews at the wrong time or too often.
 
 This data:
 
@@ -43,29 +45,15 @@ This data:
 - Is accessible only to other devices signed in to the same Apple ID.
 - Is never visible to me. I cannot see it, query it, or download it. There is no server I operate.
 
-If you sign out of iCloud or disable iCloud Drive for DeskShift, your setup will live only on the current device and won't sync across your other devices.
+If you sign out of iCloud or disable iCloud Drive for DeskShift, your setup will live only on the current device and won't sync across your other Macs.
 
 ## What DeskShift does *not* collect
 
-- No name, phone number, or address. (The only personal detail the app ever transmits is an email address — and only if you type one into the feedback form yourself; see **Feedback** below.)
-- No background analytics, usage statistics, or feature-tap counters.
-- No advertising IDs, no fingerprinting, no third-party tracking SDKs.
+- No name, phone number, address, or any other personal identifier unless you type it into the feedback form yourself.
+- No analytics, telemetry, or background feature-tap tracking.
+- No advertising IDs, no fingerprinting, no third-party SDKs.
 - No location data.
 - No health or activity data. DeskShift does **not** integrate with HealthKit.
-
-## Feedback
-
-DeskShift has an optional feedback form (in **Settings → Feedback**). This is the one place the app sends information off your device — and only when you choose to submit it.
-
-When you press **Send**, the form submits:
-
-- **Your message** — the category you pick and whatever you type in the details field.
-- **Your email** — only if you choose to fill it in. It's optional; leave it blank and I just won't have a way to reply.
-- **Basic technical context**, to help me reproduce what you're reporting: the app version and build number, your operating system type and version, your language/region, and your current plan (Free, Trial, or Pro).
-
-Submissions are sent through **Google Forms**, which hosts the form and processes your submission on my behalf. I use it solely to read and act on your feedback — never for advertising, profiling, or tracking, and it is never connected to your desk data or your iCloud content. There is no third-party SDK embedded in the app; this is a plain web request made only when you tap Send.
-
-If you never use the feedback form, none of this is ever sent.
 
 ## Bluetooth
 
@@ -79,9 +67,29 @@ If you enable the Posture Coach, DeskShift uses local system notifications to re
 
 You can revoke notification permission any time in **Settings → Notifications → DeskShift**.
 
+## Feedback
+
+DeskShift has an in-app feedback form. When you tap **Send Feedback**, the app sends the following to a Google Form:
+
+- Category.
+- The feedback text you typed.
+- Optional email address, if you typed one.
+- App version and build.
+- macOS version.
+- Locale.
+- Pro/trial/free status.
+
+DeskShift also logs a small "Love it" row to the same Google Form when you tap a "Love it" review button. That row records where the tap came from and your Pro/trial/free status. This is not background analytics; it happens only after that explicit tap.
+
+Google operates Google Forms. I use it as a lightweight inbox for support and product feedback. Do not put sensitive information in the feedback form.
+
+## App Store update checks
+
+DeskShift checks Apple's public iTunes Lookup API about once a day to see whether a newer App Store version exists. The request includes the DeskShift App Store ID and your storefront country, so the app compares against the version you can actually install. The result is stored locally in UserDefaults. It is not synced through iCloud.
+
 ## Purchases
 
-The Free vs. Pro upgrade is handled by Apple through **In-App Purchase**. Apple sends DeskShift a signed receipt that confirms whether you've purchased Pro — that's the only purchase information the app sees. I receive anonymous, aggregated sales reports from Apple, the same way every App Store developer does. I never see your name, email, payment method, or billing address.
+The Free vs. Pro upgrade is handled by Apple through **In-App Purchase**. StoreKit tells DeskShift whether you've purchased Pro — that's the purchase information the app uses to unlock features. I receive aggregated sales reports from Apple, the same way every App Store developer does. I do not receive your payment method or billing address from DeskShift.
 
 For Apple's handling of your purchase data, see [Apple's Privacy Policy](https://www.apple.com/legal/privacy/).
 
@@ -95,11 +103,11 @@ DeskShift is a utility for adults using a standing desk. It is not directed at c
 
 ## Your rights
 
-Because I don't collect or store any personal data about you, there's nothing for me to look up, export, or delete on my end. Your data lives on your device and in your own iCloud — under your full control.
+For app data stored by DeskShift, your data lives on your device and, when enabled, in your own iCloud — under your control. For feedback you explicitly send through Google Forms, email me if you want a submitted feedback row deleted and include enough detail for me to find it.
 
 If you want to wipe everything DeskShift has stored, uninstall the app and remove its data from iCloud in **Settings → Apple ID → iCloud → Manage Account Storage → DeskShift**.
 
-If you live in the EU, UK, California, or another region with privacy laws like GDPR or CCPA: those laws give you rights such as access, deletion, correction, and portability of personal data. Because I do not collect, store, or process any personal data about you, there is nothing on my side to act on. For data held by Apple (your Apple ID, purchase history, iCloud account), please contact Apple directly.
+If you live in the EU, UK, California, or another region with privacy laws like GDPR or CCPA: those laws give you rights such as access, deletion, correction, and portability of personal data. For app data held by Apple (your Apple ID, purchase history, iCloud account), please contact Apple directly. For feedback you sent to me, email me.
 
 ## Changes to this policy
 

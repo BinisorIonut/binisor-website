@@ -8,7 +8,7 @@ description: "DeskShift is licensed for personal use through the App Store. Free
 
 # DeskShift — Terms & Conditions
 
-<p class="text-sm text-(--color-muted)">Last updated: 2026-05-26</p>
+<p class="text-sm text-(--color-muted)">Last updated: 2026-06-04</p>
 
 ## In short
 
@@ -40,8 +40,8 @@ You may not:
 
 DeskShift uses a freemium model:
 
-- **Free tier** — free forever. Includes manual desk control, the Sit and Stand presets, basic Posture Coach notifications, launch at login, and auto-reconnect.
-- **14-day Pro trial** — every new install gets full Pro features for 14 days, free of charge. I use your Apple ID and iCloud account to track trial state, so the trial does not restart when you reinstall the App or install it on another device signed in to the same Apple ID. In rare cases (for example if iCloud is unavailable for an extended period) this tracking may fail.
+- **Free tier** — free forever. Includes manual desk control, the Sit and Stand presets, launch at login, auto-reconnect, iCloud sync when available, multi-desk support, units, appearance, and language settings.
+- **14-day Pro trial** — every new install gets full Pro features for 14 days, free of charge. The app uses StoreKit's signed app download date when available, with a local/iCloud SwiftData fallback, so the trial is not intended to restart when you reinstall the App or install it on another device signed in to the same Apple ID.
 - **Pro upgrade** — a one-time, non-consumable In-App Purchase. Once you buy Pro, every Pro feature stays unlocked on every device signed in to the same Apple ID, including any Pro features I add in future updates ("lifetime feature parity"), for as long as DeskShift remains commercially available on the App Store and continues to receive updates from me.
 
 Pricing and purchases are handled by Apple through the App Store. Refunds are handled by Apple under their refund policy — please contact Apple Support to request one.
@@ -66,7 +66,7 @@ Apple, iCloud, and App Store are trademarks of Apple Inc., registered in the U.S
 
 ## 6. iCloud sync
 
-DeskShift requires iCloud and syncs your desks, presets, and preferences to your own private iCloud container using Apple's CloudKit framework. I have no access to that data. iCloud availability, performance, and storage limits are governed by Apple's terms, and I am not responsible for iCloud outages, sync delays, sync conflicts, or any loss or corruption of data caused by iCloud, CloudKit, or your Apple ID configuration. See the [Privacy Policy](/deskshift/privacy) for details.
+DeskShift stores your desks, presets, preferences, trial state, and related app data locally. When iCloud is available, it syncs that data to your own private iCloud container using Apple's CloudKit framework. I have no access to that iCloud data. If iCloud is unavailable, DeskShift may fall back to local-only storage on that Mac. iCloud availability, performance, and storage limits are governed by Apple's terms, and I am not responsible for iCloud outages, sync delays, sync conflicts, or any loss or corruption of data caused by iCloud, CloudKit, or your Apple ID configuration. See the [Privacy Policy](/deskshift/privacy) for details.
 
 ## 7. Your responsibility and assumption of risk
 

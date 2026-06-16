@@ -28,14 +28,14 @@ const features = [
   "Global keyboard shortcuts per preset (Pro)",
   'Voice control: "Hey Siri, move my desk to Standing" (Pro)',
   "Spotlight and Shortcuts app integration for automations (Pro)",
-  "iCloud sync of presets and preferences across all your Macs (Pro)",
+  "iCloud sync of presets and preferences across all your Macs",
 ];
 
 type Cell = boolean | "—";
 const matrix: Array<{ feature: string; free: Cell; pro: Cell }> = [
   { feature: "Manual up/down (hold to move)", free: true, pro: true },
   { feature: "Sit & Stand memory positions (2 fixed slots)", free: true, pro: true },
-  { feature: "Notifications to switch positions", free: true, pro: true },
+  { feature: "Posture Coach — switch-position reminders", free: false, pro: true },
   { feature: "Launch at login", free: true, pro: true },
   { feature: "Auto-reconnect to the last paired desk", free: true, pro: true },
   { feature: "Up to 12 custom memory positions", free: false, pro: true },
@@ -47,8 +47,8 @@ const matrix: Array<{ feature: string; free: Cell; pro: Cell }> = [
   { feature: "Siri voice control", free: false, pro: true },
   { feature: "Spotlight search for presets", free: false, pro: true },
   { feature: "Shortcuts app integration", free: false, pro: true },
-  { feature: "iCloud sync across Macs", free: false, pro: true },
-  { feature: "Multi-desk support", free: false, pro: true },
+  { feature: "iCloud sync across Macs", free: true, pro: true },
+  { feature: "Multi-desk support", free: true, pro: true },
   { feature: "Lifetime feature parity (future Pro features included)", free: "—", pro: true },
 ];
 ---
