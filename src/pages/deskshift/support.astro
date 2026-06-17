@@ -1,10 +1,38 @@
 ---
 import Base from "../../layouts/Base.astro";
 
-// TODO: replace with your Web3Forms access key.
-// Sign up free at https://web3forms.com (no account needed — just verify your email).
-// The key is safe to commit publicly — it's per-form and rate-limited.
-const WEB3FORMS_ACCESS_KEY = "YOUR_WEB3FORMS_ACCESS_KEY";
+// The website contact form posts to the SAME Google Form the macOS app uses for
+// in-app feedback (see DeskShift's `FeedbackForm.deskShift` /
+// `FeedbackCategory.formValue`). One inbox for app + website. The form id and
+// `entry.*` ids below mirror that config — keep them in step if the app's change.
+const GOOGLE_FORM_ID =
+  "1FAIpQLScPJSpkZXOJLsdh0yaLGP-q_6NLxzdpAvp2ziEjmPnoLnJW-g";
+const FORM_ACTION = `https://docs.google.com/forms/d/e/${GOOGLE_FORM_ID}/formResponse`;
+
+const ENTRY = {
+  category: "entry.645832316",
+  details: "entry.301068786",
+  email: "entry.2137833322",
+  appVersion: "entry.1120512372",
+  build: "entry.1389019362",
+  osType: "entry.1183756905",
+  osVersion: "entry.1845982949",
+  locale: "entry.273320308",
+  subscription: "entry.280537996",
+};
+
+// The user-facing topic maps to one of the form's Category options
+// ("Bug report (Something broken)" / "Feature request" / "Feature improvement" /
+// "Other"). Every value
+// here is a valid option, so Google never silently rejects the submission; the
+// precise topic is also preserved verbatim in the Details field.
+const TOPIC_TO_CATEGORY: Record<string, string> = {
+  "Bug report": "Bug report (Something broken)",
+  "Feature request": "Feature request",
+  "Question about compatibility": "Other",
+  "Purchase / refund / receipt": "Other",
+  Other: "Other",
+};
 
 const faqs = [
   {
@@ -73,29 +101,34 @@ const faqs = [
   <section class="mt-16">
     <h2 class="text-2xl font-semibold tracking-tight">Get in touch</h2>
     <p class="mt-2 text-(--color-muted)">
-      Everything goes straight to my inbox. I usually reply within 1–2
-      business days.
+      Everything goes straight to my inbox. I usually reply within 1–2 business
+      days.
     </p>
 
     <form
-      action="https://api.web3forms.com/submit"
+      id="contact-form"
+      action={FORM_ACTION}
       method="POST"
       class="mt-8 space-y-5"
+      data-entry-category={ENTRY.category}
+      data-entry-details={ENTRY.details}
+      data-entry-email={ENTRY.email}
+      data-entry-app-version={ENTRY.appVersion}
+      data-entry-build={ENTRY.build}
+      data-entry-os-type={ENTRY.osType}
+      data-entry-os-version={ENTRY.osVersion}
+      data-entry-locale={ENTRY.locale}
+      data-entry-subscription={ENTRY.subscription}
+      data-topic-map={JSON.stringify(TOPIC_TO_CATEGORY)}
     >
-      <input type="hidden" name="access_key" value={WEB3FORMS_ACCESS_KEY} />
-      <input type="hidden" name="subject" value="DeskShift support — new message" />
+      <!-- Honeypot: bots fill hidden fields; real users never see this. -->
       <input
-        type="hidden"
-        name="redirect"
-        value="https://binisor.com/deskshift/support?sent=1"
-      />
-      <!-- Honeypot anti-spam (Web3Forms ignores submissions where this is filled). -->
-      <input
-        type="checkbox"
-        name="botcheck"
+        type="text"
+        name="company"
         class="hidden"
         tabindex="-1"
         autocomplete="off"
+        aria-hidden="true"
       />
 
       <div class="grid gap-5 sm:grid-cols-2">
@@ -147,28 +180,97 @@ const faqs = [
 
       <button
         type="submit"
-        class="inline-flex items-center rounded-xl bg-(--color-accent) px-6 py-3 text-base font-medium text-white transition hover:opacity-90"
+        class="inline-flex items-center rounded-xl bg-(--color-accent) px-6 py-3 text-base font-medium text-white transition hover:opacity-90 disabled:opacity-60"
       >
         Send message
       </button>
     </form>
 
     <p class="mt-6 text-sm text-(--color-muted)">
-      Form delivery powered by <a href="https://web3forms.com" rel="noopener">Web3Forms</a>.
-      Your message and email address are forwarded to my inbox and not stored
-      elsewhere.
+      Your message is delivered through a private Google Form that only I can
+      read — the same inbox the app's in-app feedback goes to. Prefer email? Write
+      to <a href="mailto:binisor.ionut@gmail.com">binisor.ionut@gmail.com</a>.
     </p>
   </section>
 </Base>
 
 <script is:inline>
-  // Friendly thank-you when the form posts back with ?sent=1
-  if (typeof window !== "undefined" && location.search.includes("sent=1")) {
-    const banner = document.createElement("div");
-    banner.textContent = "Thanks — your message is on its way.";
-    banner.style.cssText =
-      "position:fixed;top:1rem;left:50%;transform:translateX(-50%);background:var(--color-accent);color:#fff;padding:0.75rem 1.25rem;border-radius:0.75rem;font-size:0.95rem;z-index:50;box-shadow:0 8px 24px rgba(0,0,0,0.15);";
-    document.body.appendChild(banner);
-    setTimeout(() => banner.remove(), 5000);
-  }
+  (function () {
+    const form = document.getElementById("contact-form");
+    if (!form) return;
+
+    const button = form.querySelector('button[type="submit"]');
+    const d = form.dataset;
+    const topicMap = JSON.parse(d.topicMap || "{}");
+
+    function banner(text, ok) {
+      const el = document.createElement("div");
+      el.textContent = text;
+      el.style.cssText =
+        "position:fixed;top:1rem;left:50%;transform:translateX(-50%);color:#fff;padding:0.75rem 1.25rem;border-radius:0.75rem;font-size:0.95rem;z-index:50;box-shadow:0 8px 24px rgba(0,0,0,0.15);background:" +
+        (ok ? "var(--color-accent)" : "#b00020");
+      document.body.appendChild(el);
+      setTimeout(() => el.remove(), 5000);
+    }
+
+    form.addEventListener("submit", async (event) => {
+      event.preventDefault();
+
+      // Honeypot tripped — pretend success, send nothing.
+      if (form.elements.company && form.elements.company.value) {
+        banner("Thanks — your message is on its way.", true);
+        form.reset();
+        return;
+      }
+
+      const name = (form.elements.name.value || "").trim();
+      const email = (form.elements.email.value || "").trim();
+      const topic = form.elements.topic.value || "Other";
+      const message = (form.elements.message.value || "").trim();
+
+      const details =
+        "[Sent from the binisor.com contact form]\n" +
+        "Topic: " +
+        topic +
+        "\n" +
+        "Name: " +
+        name +
+        "\n\n" +
+        message;
+
+      const body = new URLSearchParams();
+      body.append(d.entryCategory, topicMap[topic] || "Other");
+      body.append(d.entryDetails, details);
+      if (email) body.append(d.entryEmail, email);
+      body.append(d.entryAppVersion, "Website");
+      body.append(d.entryBuild, "—");
+      body.append(d.entryOsType, "Web");
+      body.append(d.entryOsVersion, "—");
+      body.append(d.entryLocale, navigator.language || "—");
+      body.append(d.entrySubscription, "—");
+
+      if (button) {
+        button.disabled = true;
+        button.textContent = "Sending…";
+      }
+
+      try {
+        // Google Forms sends no CORS headers, so we can't read the response —
+        // post no-cors (fire-and-forget) and optimistically confirm success.
+        await fetch(form.action, { method: "POST", mode: "no-cors", body });
+        banner("Thanks — your message is on its way.", true);
+        form.reset();
+      } catch {
+        banner(
+          "Couldn't send — please email binisor.ionut@gmail.com instead.",
+          false
+        );
+      } finally {
+        if (button) {
+          button.disabled = false;
+          button.textContent = "Send message";
+        }
+      }
+    });
+  })();
 </script>
