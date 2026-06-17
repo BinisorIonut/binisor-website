@@ -242,12 +242,14 @@ const faqs = [
       body.append(d.entryCategory, topicMap[topic] || "Other");
       body.append(d.entryDetails, details);
       if (email) body.append(d.entryEmail, email);
+      // Known channel facts (used to tell website rows from app rows). The rest
+      // is genuinely unknown on the web, so send "-" rather than inferring it.
       body.append(d.entryAppVersion, "Website");
-      body.append(d.entryBuild, "—");
       body.append(d.entryOsType, "Web");
-      body.append(d.entryOsVersion, "—");
-      body.append(d.entryLocale, navigator.language || "—");
-      body.append(d.entrySubscription, "—");
+      body.append(d.entryBuild, "-");
+      body.append(d.entryOsVersion, "-");
+      body.append(d.entryLocale, navigator.language || "-");
+      body.append(d.entrySubscription, "-");
 
       if (button) {
         button.disabled = true;
