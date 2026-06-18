@@ -232,13 +232,7 @@ const faqs = [
       const topic = form.elements.topic.value || "Other";
       const message = (form.elements.message.value || "").trim();
 
-      const details =
-        "[Sent from the binisor.com contact form]\n" +
-        "Topic: " +
-        topic +
-        (name ? "\nName: " + name : "") +
-        "\n\n" +
-        message;
+      const details = (name ? "Name: " + name + "\n\n" : "") + message;
 
       const body = new URLSearchParams();
       body.append(d.entryCategory, topicMap[topic] || "Other");
