@@ -131,29 +131,6 @@ const faqs = [
         aria-hidden="true"
       />
 
-      <div class="grid gap-5 sm:grid-cols-2">
-        <label class="block">
-          <span class="text-sm font-medium">Your name</span>
-          <input
-            type="text"
-            name="name"
-            required
-            autocomplete="name"
-            class="mt-2 w-full rounded-xl border border-(--color-border) bg-(--color-surface) px-4 py-3 text-base outline-none transition focus:border-(--color-accent)"
-          />
-        </label>
-        <label class="block">
-          <span class="text-sm font-medium">Your email</span>
-          <input
-            type="email"
-            name="email"
-            required
-            autocomplete="email"
-            class="mt-2 w-full rounded-xl border border-(--color-border) bg-(--color-surface) px-4 py-3 text-base outline-none transition focus:border-(--color-accent)"
-          />
-        </label>
-      </div>
-
       <label class="block">
         <span class="text-sm font-medium">What can I help with?</span>
         <select
@@ -177,6 +154,33 @@ const faqs = [
           class="mt-2 w-full rounded-xl border border-(--color-border) bg-(--color-surface) px-4 py-3 text-base outline-none transition focus:border-(--color-accent)"
         ></textarea>
       </label>
+
+      <div class="grid gap-5 sm:grid-cols-2">
+        <label class="block">
+          <span class="text-sm font-medium"
+            >Your name
+            <span class="font-normal text-(--color-muted)">(optional)</span></span
+          >
+          <input
+            type="text"
+            name="name"
+            autocomplete="name"
+            class="mt-2 w-full rounded-xl border border-(--color-border) bg-(--color-surface) px-4 py-3 text-base outline-none transition focus:border-(--color-accent)"
+          />
+        </label>
+        <label class="block">
+          <span class="text-sm font-medium"
+            >Your email
+            <span class="font-normal text-(--color-muted)">(optional)</span></span
+          >
+          <input
+            type="email"
+            name="email"
+            autocomplete="email"
+            class="mt-2 w-full rounded-xl border border-(--color-border) bg-(--color-surface) px-4 py-3 text-base outline-none transition focus:border-(--color-accent)"
+          />
+        </label>
+      </div>
 
       <button
         type="submit"
@@ -232,9 +236,7 @@ const faqs = [
         "[Sent from the binisor.com contact form]\n" +
         "Topic: " +
         topic +
-        "\n" +
-        "Name: " +
-        name +
+        (name ? "\nName: " + name : "") +
         "\n\n" +
         message;
 
