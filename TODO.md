@@ -11,59 +11,38 @@ approval) — once they're in, the site goes live.
 - LinkedIn URL wired into `/`
 - GitHub URL wired into `/` (`github.com/BinisorIonut`)
 - Bio drafted based on your LinkedIn (Senior iOS dev, Bucharest, 7 yrs Swift)
-- Form service chosen: **Web3Forms** (free, no account needed beyond email confirm)
+- Form service: **Google Forms** — the support form shares one inbox with the app's in-app feedback
 - Analytics chosen: **Cloudflare Web Analytics** (free, no cookies, no GDPR banner)
 - Privacy / Terms / Support pages with full legal text
 - Auto light/dark theme via `prefers-color-scheme`
 
 ---
 
-## 1. Email at `hello@binisor.com` (free, ~10 min via Cloudflare)
+## 1. Email at `deskshift@binisor.com` (via iCloud+ Custom Email Domain)
 
-You want a professional `@binisor.com` email. The fastest free path:
+Set up through **iCloud+ → Custom Email Domain** on `binisor.com`, hosting
+`deskshift@binisor.com` on iCloud Mail. Send *and* receive work natively from
+Apple Mail once the domain is verified — no SMTP relay or third-party forwarder
+needed.
 
-**Cloudflare Email Routing** — receive at `hello@binisor.com`, forward to
-your Gmail. Free, no monthly cost, set up in 10 minutes since your DNS is
-already on Cloudflare.
+Prerequisite: iCloud Mail must be enabled first (creates an `@icloud.com`
+address, done on an Apple device). Then add the domain in iCloud Settings →
+Custom Email Domain and publish the DNS records Apple provides (MX, SPF, DKIM)
+at the registrar.
 
-1. Cloudflare → your domain → **Email → Email Routing**
-2. Enable Email Routing (Cloudflare adds the MX records automatically)
-3. Add a route: `hello@binisor.com` → `binisor.ionut@gmail.com` (or whatever
-   your destination Gmail is). Cloudflare sends a verification email to the
-   destination — click the link.
-4. Done. Mail to `hello@binisor.com` now lands in your Gmail inbox.
-
-**Limitation:** this is receive-only. To reply *from* `hello@binisor.com`
-(instead of your Gmail), you have two options later:
-- Free path: configure Gmail "Send mail as" with an SMTP relay
-  (SendGrid free tier or similar — 30 min setup)
-- Paid path: Fastmail (~$5/mo) or Google Workspace (~$6/mo) — full-featured
-  custom-domain mail, send & receive from the same address
-
-For App Store launch, receive-only is enough. You can reply from Gmail and
-users won't care.
-
-**Once `hello@binisor.com` is live**, swap `binisor.ionut@gmail.com` in two
-files for the cleaner branded address:
-- `src/pages/deskshift/privacy.mdx` (two mentions)
-- `src/pages/deskshift/terms.mdx` (two mentions)
-- `src/pages/deskshift/support.astro` (FAQ text and Web3Forms destination — see
-  item 2)
+- [x] Branded address swapped into the site — `privacy.mdx`, `terms.mdx`, and
+  `support.astro` all use `deskshift@binisor.com`.
+- [ ] **Pending:** Apple's domain verification. Once it clears, send a test
+  message to `deskshift@binisor.com` to confirm it receives mail before launch.
 
 ---
 
-## 2. Web3Forms access key (~3 min)
+## 2. Contact form — already wired (Google Forms)
 
-1. Go to <https://web3forms.com>
-2. Enter your destination email (`hello@binisor.com` once it's set up via
-   Cloudflare, or `binisor.ionut@gmail.com` for now)
-3. Confirm via the email they send
-4. Copy the access key they show you
-5. In `src/pages/deskshift/support.astro`, replace:
-   ```ts
-   const WEB3FORMS_ACCESS_KEY = "YOUR_WEB3FORMS_ACCESS_KEY";
-   ```
-   with the real key. The key is safe to commit publicly.
+✅ Done. The support form posts to the **same Google Form** the macOS app's
+in-app feedback uses, so app + website share one inbox (see
+`src/pages/deskshift/support.astro`). No Web3Forms account or access key is
+needed — that earlier plan was dropped.
 
 ---
 
