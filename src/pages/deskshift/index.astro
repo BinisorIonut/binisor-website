@@ -21,16 +21,6 @@ const pillars = [
   },
 ];
 
-const features = [
-  "Manual up/down controls from the menu bar",
-  "Sit and Stand memory presets with unlimited custom variants (Pro)",
-  "Posture Coach reminders and optional automatic desk movement (Pro)",
-  "Global keyboard shortcuts per preset (Pro)",
-  'Voice control: "Hey Siri, move my desk to Standing" (Pro)',
-  "Spotlight and Shortcuts app integration for automations (Pro)",
-  "iCloud sync of presets and preferences across all your Macs",
-];
-
 type Cell = boolean | "—";
 // Mirrors ProFeature.matrix in the DeskShift app — Free-first, then Pro-only,
 // then lifetime parity. Titles and descriptions copied from the app.
@@ -97,32 +87,14 @@ const matrix: Array<{ feature: string; desc: string; free: Cell; pro: Cell }> = 
     }
   </section>
 
-  <!-- Feature list -->
-  <section id="features" class="mt-20">
-    <h2 class="text-2xl font-semibold tracking-tight">What you get</h2>
-    <ul class="mt-6 space-y-3 text-base leading-relaxed">
-      {
-        features.map((f) => (
-          <li class="flex gap-3">
-            <span class="text-(--color-accent)" aria-hidden="true">
-              •
-            </span>
-            <span>{f}</span>
-          </li>
-        ))
-      }
-    </ul>
-  </section>
-
   <!-- Free vs Pro -->
-  <section class="mt-20">
-    <h2 class="text-2xl font-semibold tracking-tight">Free vs Pro</h2>
-    <p class="mt-2 text-(--color-muted)">
+  <section id="features" class="mt-20">
+    <p class="text-2xl font-semibold tracking-tight sm:text-3xl">
       One price. One time. Yours forever.
-      <span class="block sm:inline">
-        Every new install starts with a 14-day full-Pro trial — no card, no
-        account.
-      </span>
+    </p>
+    <p class="mt-3 text-lg text-(--color-muted)">
+      Every new install starts with a 14-day full-Pro trial — no card, no
+      account.
     </p>
 
     <div class="mt-6 overflow-x-auto rounded-2xl border border-(--color-border)">
