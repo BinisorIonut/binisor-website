@@ -32,24 +32,28 @@ const features = [
 ];
 
 type Cell = boolean | "—";
-const matrix: Array<{ feature: string; free: Cell; pro: Cell }> = [
-  { feature: "Manual up/down (hold to move)", free: true, pro: true },
-  { feature: "Sit & Stand memory positions (2 fixed slots)", free: true, pro: true },
-  { feature: "Posture Coach — switch-position reminders", free: false, pro: true },
-  { feature: "Launch at login", free: true, pro: true },
-  { feature: "Auto-reconnect to the last paired desk", free: true, pro: true },
-  { feature: "Up to 12 custom memory positions", free: false, pro: true },
-  { feature: "Menu bar variants (icon / value / icon + value)", free: false, pro: true },
-  { feature: "Live height in the menu bar", free: false, pro: true },
-  { feature: "Global keyboard shortcuts", free: false, pro: true },
-  { feature: "Desk button double-tap gesture", free: false, pro: true },
-  { feature: "Posture Coach automatic movement", free: false, pro: true },
-  { feature: "Siri voice control", free: false, pro: true },
-  { feature: "Spotlight search for presets", free: false, pro: true },
-  { feature: "Shortcuts app integration", free: false, pro: true },
-  { feature: "iCloud sync across Macs", free: true, pro: true },
-  { feature: "Multi-desk support", free: true, pro: true },
-  { feature: "Lifetime feature parity (future Pro features included)", free: "—", pro: true },
+// Mirrors ProFeature.matrix in the DeskShift app — Free-first, then Pro-only,
+// then lifetime parity. Titles and descriptions copied from the app.
+const matrix: Array<{ feature: string; desc: string; free: Cell; pro: Cell }> = [
+  { feature: "Multi-desk support", desc: "Pair every desk you use and switch between them in a tap.", free: true, pro: true },
+  { feature: "Launch at login", desc: "DeskShift is ready the moment you sign in.", free: true, pro: true },
+  { feature: "Auto-reconnect to your last desk", desc: "Walk up and you’re connected — no fiddling with Bluetooth.", free: true, pro: true },
+  { feature: "iCloud sync across devices", desc: "Your desks and presets follow your Apple ID to every Mac.", free: true, pro: true },
+  { feature: "Manual up / down (hold to move)", desc: "Hold to raise or lower, release to stop. Simple.", free: true, pro: true },
+  { feature: "Sit and Stand memory positions", desc: "Two one-tap heights for the postures you use most.", free: true, pro: true },
+
+  { feature: "Create your custom memory positions", desc: "Name and shape your day — sit, stand, lean, perch — with custom icons.", free: false, pro: true },
+  { feature: "Desk-button double-tap gesture", desc: "Double-tap the physical button to fly to Sit or Stand.", free: false, pro: true },
+  { feature: "Notifications to switch positions", desc: "A gentle nudge when you’ve been sitting too long.", free: false, pro: true },
+  { feature: "Posture Coach automation", desc: "Custom intervals, a schedule, and auto-move on your terms.", free: false, pro: true },
+  { feature: "Customize the menu bar", desc: "Show an icon, the live height, or both. Your bar, your call.", free: false, pro: true },
+  { feature: "Live height in the menu bar", desc: "Glance up and see exactly where your desk is, in cm or inches.", free: false, pro: true },
+  { feature: "Siri integration", desc: "“Hey Siri, move my desk to Standing.” That’s the whole thing.", free: false, pro: true },
+  { feature: "Spotlight search", desc: "Type a position name into Spotlight and hit return.", free: false, pro: true },
+  { feature: "Shortcuts app integration", desc: "Make your desk a step in any automation you dream up.", free: false, pro: true },
+  { feature: "Global keyboard shortcuts", desc: "Jump to any position from anywhere in macOS — no clicking.", free: false, pro: true },
+
+  { feature: "Lifetime Pro updates", desc: "Every Pro feature we add later stays unlocked for you. Forever.", free: "—", pro: true },
 ];
 ---
 
@@ -59,7 +63,7 @@ const matrix: Array<{ feature: string; free: Cell; pro: Cell }> = [
 >
   <!-- Hero -->
   <section class="space-y-6">
-    <p class="text-sm font-medium tracking-wide text-(--color-accent) uppercase">
+    <p class="text-sm font-medium tracking-wide text-(--color-accent)">
       DeskShift for macOS
     </p>
     <h1 class="text-4xl leading-tight font-semibold tracking-tight sm:text-5xl">
@@ -133,8 +137,11 @@ const matrix: Array<{ feature: string; free: Cell; pro: Cell }> = [
         <tbody>
           {
             matrix.map((row) => (
-              <tr class="border-t border-(--color-border)/60">
-                <td class="px-4 py-3">{row.feature}</td>
+              <tr class="border-t border-(--color-border)/60 align-top">
+                <td class="px-4 py-3">
+                  <div class="font-medium">{row.feature}</div>
+                  <div class="mt-0.5 text-xs text-(--color-muted)">{row.desc}</div>
+                </td>
                 <td class="px-4 py-3 text-center">
                   {row.free === true ? "✓" : row.free === "—" ? "—" : ""}
                 </td>
