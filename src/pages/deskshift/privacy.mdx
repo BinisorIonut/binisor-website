@@ -15,37 +15,26 @@ description: "DeskShift doesn't track you or run analytics. It collects nothing 
 - I don't collect personal information automatically.
 - I don't run analytics, telemetry, or tracking of any kind.
 - I use Google Forms only when you explicitly send feedback or tap a "Love it" review button.
-- Your desks, presets, settings, trial state, and small review-prompt counters stay on your device and, when iCloud is available, in your own private iCloud container.
-- Bluetooth talks only to your desk — never to me.
+- Your app preferences and settings stay on your device and, when iCloud is available, in your own private iCloud.
 
 That's the whole story. The sections below are the long version.
 
-## Who I am
-
-DeskShift is built by an independent solo developer. You can reach me at **[deskshift@binisor.com](mailto:deskshift@binisor.com)**.
-
-DeskShift is sold through the **App Store**. Apple, not me, handles your payment, your Apple ID, and your billing history.
-
 ## What DeskShift stores and syncs via iCloud
 
-DeskShift stores app data on your device using Apple's SwiftData framework. When iCloud is available, that data syncs to **your own private iCloud container** using Apple's CloudKit, so it stays in step across every Mac signed in to your Apple ID. If iCloud is unavailable, DeskShift falls back to local-only storage on that Mac.
+DeskShift stores its data on your device. When iCloud is available, that data syncs to **your own private iCloud container**, so it stays in step across every Mac signed in to your Apple ID. If iCloud is unavailable, DeskShift falls back to local-only storage on that Mac.
 
 DeskShift stores and syncs the following:
 
-- The desks you've paired (name, Bluetooth identifier, calibration offset, height range).
-- Your presets (name, icon, target height, keyboard shortcut).
-- Your preferences (units, appearance, language, menu bar style, Posture Coach settings, gesture toggles).
-- A small amount of runtime state for the Posture Coach (your last detected position and the timestamp it changed).
-- Your Pro trial anchor — the first-launch date, plus the App Store-signed download date once StoreKit provides it, used to count the 14-day trial so it doesn't restart when you reinstall or set up another Mac. **No purchase record is stored or synced**; StoreKit alone is the authority for whether you've bought Pro.
-- Review-prompt counters, such as total desk moves, distinct active days, last prompt date, and whether you already responded positively. These are used only to avoid asking for reviews at the wrong time or too often.
+- The desks you've paired and their calibration.
+- Your presets and preferences.
+- A trial anchor so your 14-day trial doesn't restart when you reinstall or set up another Mac. **No purchase record is stored or synced** — StoreKit alone knows whether you've bought Pro.
+- Counters that help DeskShift avoid asking for a review at the wrong time or too often.
 
 This data:
 
 - Sits in your iCloud account, under your Apple ID.
 - Is accessible only to other devices signed in to the same Apple ID.
-- Is never visible to me. I cannot see it, query it, or download it. There is no server I operate.
-
-If you sign out of iCloud or disable iCloud Drive for DeskShift, your setup will live only on the current device and won't sync across your other Macs.
+- Is never visible to me — there's no server I operate.
 
 ## What DeskShift does *not* collect
 
@@ -85,11 +74,11 @@ Google operates Google Forms. I use it as a lightweight inbox for support and pr
 
 ## App Store update checks
 
-DeskShift checks Apple's public iTunes Lookup API about once a day to see whether a newer App Store version exists. The request includes the DeskShift App Store ID and your storefront country, so the app compares against the version you can actually install. The result is stored locally in UserDefaults. It is not synced through iCloud.
+DeskShift checks Apple's public iTunes Lookup API about once a day to see whether a newer App Store version exists. The request includes the DeskShift App Store ID and your storefront country, so the app compares against the version you can actually install. The result is stored locally and isn't synced.
 
 ## Purchases
 
-The Free vs. Pro upgrade is handled by Apple through **In-App Purchase**. StoreKit tells DeskShift whether you've purchased Pro — that's the purchase information the app uses to unlock features. I receive aggregated sales reports from Apple, the same way every App Store developer does. I do not receive your payment method or billing address from DeskShift.
+The Free vs. Pro upgrade is handled by Apple through **In-App Purchase**, and DeskShift is sold through the **App Store**. Apple, not me, handles your payment, your Apple ID, and your billing history. StoreKit tells DeskShift whether you've purchased Pro — that's the purchase information the app uses to unlock features. I receive aggregated sales reports from Apple, the same way every App Store developer does. I do not receive your payment method or billing address from DeskShift.
 
 For Apple's handling of your purchase data, see [Apple's Privacy Policy](https://www.apple.com/legal/privacy/).
 
