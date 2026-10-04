@@ -1,11 +1,13 @@
 ---
+import { appStoreUrl } from "../lib/deskshift";
+
 interface Props {
   href?: string;
   label?: string;
 }
 
 const {
-  href = "#",
+  href = appStoreUrl(),
   label = "Download on the Mac App Store",
 } = Astro.props;
 

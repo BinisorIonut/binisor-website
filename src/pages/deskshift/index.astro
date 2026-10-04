@@ -1,6 +1,44 @@
 ---
+import { Image } from "astro:assets";
 import Base from "../../layouts/Base.astro";
 import AppStoreBadge from "../../components/AppStoreBadge.astro";
+import {
+  appStoreUrl,
+  DISCLAIMER,
+  MIN_MACOS,
+  PRO_PRICE,
+} from "../../lib/deskshift";
+
+import icon from "../../assets/deskshift/icon.png";
+import popoverMoving from "../../assets/deskshift/popover-moving.png";
+import positionEditor from "../../assets/deskshift/position-editor.png";
+import postureCoach from "../../assets/deskshift/posture-coach.png";
+import keyboardShortcuts from "../../assets/deskshift/keyboard-shortcuts.png";
+
+const title = "DeskShift — Mac app for IKEA IDÅSEN standing desks";
+const description =
+  "Control your IKEA IDÅSEN standing desk from the Mac menu bar: memory positions, keyboard shortcuts and a Posture Coach that can move the desk for you. Free to try, one-time purchase.";
+
+const features = [
+  {
+    title: "Every height you use, one tap away",
+    body: "Save up to 12 positions of your own, name them, and jump to any of them from the menu bar. No holding a button, no guessing the height.",
+    image: positionEditor,
+    alt: "DeskShift's position editor in the menu bar popover: a Stand position at 114 cm with its keyboard shortcut and Posture Coach schedule.",
+  },
+  {
+    title: "A standing desk that gets you standing",
+    body: "Posture Coach reminds you to switch positions on your schedule. Turn on automatic movement and the desk raises or lowers itself.",
+    image: postureCoach,
+    alt: "Posture Coach settings: sitting and standing intervals, a schedule with active hours, and automatic desk movement switched on.",
+  },
+  {
+    title: "Never leave the keyboard",
+    body: "Global shortcuts for every position, plus up, down and stop. Desk actions in Spotlight and the Shortcuts app; name a shortcut and Siri runs it. Or double-tap the desk's own button.",
+    image: keyboardShortcuts,
+    alt: "Keyboard Shortcuts settings: a global shortcut for each memory position and for moving up, moving down and stopping.",
+  },
+];
 
 const pillars = [
   {
@@ -13,7 +51,7 @@ const pillars = [
   },
   {
     title: "Native Mac feel",
-    body: "Menu bar, SF Symbols, iCloud sync. Zero third-party dependencies.",
+    body: "Menu bar, SF Symbols, iCloud sync. Built in SwiftUI, in 40 languages.",
   },
   {
     title: "Privacy by design",
@@ -21,38 +59,108 @@ const pillars = [
   },
 ];
 
-type Cell = boolean | "—";
-// Mirrors ProFeature.matrix in the DeskShift app — Free-first, then Pro-only,
-// then lifetime parity. Titles and descriptions copied from the app.
-const matrix: Array<{ feature: string; desc: string; free: Cell; pro: Cell }> = [
-  { feature: "Multi-desk support", desc: "Pair every desk you use and switch between them in a tap.", free: true, pro: true },
-  { feature: "Launch at login", desc: "DeskShift is ready the moment you sign in.", free: true, pro: true },
-  { feature: "Auto-reconnect to your last desk", desc: "Walk up and you’re connected — no fiddling with Bluetooth.", free: true, pro: true },
-  { feature: "iCloud sync across devices", desc: "Your desks and presets follow your Apple ID to every Mac.", free: true, pro: true },
-  { feature: "Manual up / down (hold to move)", desc: "Hold to raise or lower, release to stop. Simple.", free: true, pro: true },
-  { feature: "Sit and Stand memory positions", desc: "Two one-tap heights for the postures you use most.", free: true, pro: true },
+// Mirrors ProFeature.matrix in the DeskShift app and FreeVsPro.md §3 — Free
+// first, then Pro-only, then lifetime parity.
+const matrix: Array<{ feature: string; desc: string; free: boolean }> = [
+  { feature: "Multi-desk support", desc: "Pair every desk you use and switch between them in a tap.", free: true },
+  { feature: "Launch at login", desc: "DeskShift is ready the moment you sign in.", free: true },
+  { feature: "Auto-reconnect to your last desk", desc: "Walk up and you’re connected — no fiddling with Bluetooth.", free: true },
+  { feature: "iCloud sync across devices", desc: "Your desks and presets follow your Apple ID to every Mac.", free: true },
+  { feature: "Manual up / down (hold to move)", desc: "Hold to raise or lower, release to stop. Simple.", free: true },
+  { feature: "Sit and Stand memory positions", desc: "Two one-tap heights for the postures you use most.", free: true },
 
-  { feature: "Create your custom memory positions", desc: "Name and shape your day — sit, stand, lean, perch — with custom icons.", free: false, pro: true },
-  { feature: "Desk-button double-tap gesture", desc: "Double-tap the physical button to fly to Sit or Stand.", free: false, pro: true },
-  { feature: "Notifications to switch positions", desc: "A gentle nudge when you’ve been sitting too long.", free: false, pro: true },
-  { feature: "Posture Coach automation", desc: "Custom intervals, a schedule, and auto-move on your terms.", free: false, pro: true },
-  { feature: "Customize the menu bar", desc: "Show an icon, the live height, or both. Your bar, your call.", free: false, pro: true },
-  { feature: "Live height in the menu bar", desc: "Glance up and see exactly where your desk is, in cm or inches.", free: false, pro: true },
-  { feature: "Siri integration", desc: "“Hey Siri, move my desk to Standing.” That’s the whole thing.", free: false, pro: true },
-  { feature: "Spotlight search", desc: "Type a position name into Spotlight and hit return.", free: false, pro: true },
-  { feature: "Shortcuts app integration", desc: "Make your desk a step in any automation you dream up.", free: false, pro: true },
-  { feature: "Global keyboard shortcuts", desc: "Jump to any position from anywhere in macOS — no clicking.", free: false, pro: true },
+  { feature: "Create your custom memory positions", desc: "Name and shape your day — sit, stand, lean, perch — with custom icons.", free: false },
+  { feature: "Desk-button double-tap gesture", desc: "Double-tap the physical button to fly to Sit or Stand.", free: false },
+  { feature: "Notifications to switch positions", desc: "A gentle nudge when you’ve been sitting too long.", free: false },
+  { feature: "Posture Coach automation", desc: "Custom intervals, a schedule, and auto-move on your terms.", free: false },
+  { feature: "Customize the menu bar", desc: "Show an icon, the live height, or both. Your bar, your call.", free: false },
+  { feature: "Live height in the menu bar", desc: "Glance up and see exactly where your desk is, in cm or inches.", free: false },
+  { feature: "Siri integration", desc: "Name a shortcut once, then just say it: “Hey Siri, stand up.”", free: false },
+  { feature: "Spotlight search", desc: "Type a desk action into Spotlight and hit return.", free: false },
+  { feature: "Shortcuts app integration", desc: "Make your desk a step in any automation you dream up.", free: false },
+  { feature: "Global keyboard shortcuts", desc: "Jump to any position from anywhere in macOS — no clicking.", free: false },
 
-  { feature: "Lifetime Pro updates", desc: "Every Pro feature we add later stays unlocked for you. Forever.", free: "—", pro: true },
+  { feature: "Lifetime Pro updates", desc: "Every Pro feature we add later stays unlocked for you. Forever.", free: false },
 ];
+
+const faqs = [
+  {
+    q: "Which desks does DeskShift work with?",
+    a: "DeskShift is built and tested on the IKEA IDÅSEN. Other desks with a Linak Bluetooth controller generally work too, but that is best-effort: the 14-day trial is the easy way to check yours.",
+  },
+  {
+    q: "Do I need the desk's phone app?",
+    a: "No. DeskShift talks to the desk directly over Bluetooth. There is nothing to install on the desk.",
+  },
+  {
+    q: "Is it a subscription?",
+    a: "No. The basics are free. Pro is a one-time purchase that covers your Family Sharing group and every Pro feature added later.",
+  },
+  {
+    q: "What happens when the trial ends?",
+    a: "DeskShift keeps working with the free features: manual up and down, Sit and Stand, launch at login, auto-reconnect, iCloud sync and multiple desks. The Pro features lock until you buy, and everything you set up is kept.",
+  },
+  {
+    q: "Will the desk move on its own?",
+    a: "Only on the schedule you set. Posture Coach can remind you, move the desk for you, or both, inside the hours and days you choose.",
+  },
+  {
+    q: "What does DeskShift know about me?",
+    a: "Nothing. There is no account, no analytics and no tracking. Your desks and settings stay on your Mac and sync through your own iCloud. Feedback is sent only when you submit it.",
+  },
+  {
+    q: "Which Macs does it run on?",
+    a: `Any Mac with Bluetooth running macOS ${MIN_MACOS} or later.`,
+  },
+];
+
+const softwareLd = {
+  "@context": "https://schema.org",
+  "@type": "SoftwareApplication",
+  name: "DeskShift",
+  description,
+  operatingSystem: `macOS ${MIN_MACOS} or later`,
+  applicationCategory: "UtilitiesApplication",
+  url: new URL("/deskshift/", Astro.site).toString(),
+  image: new URL("/deskshift/og.png", Astro.site).toString(),
+  downloadUrl: appStoreUrl(),
+  installUrl: appStoreUrl(),
+  author: {
+    "@type": "Person",
+    name: "Ionut Binisor",
+    url: Astro.site?.toString(),
+  },
+  offers: { "@type": "Offer", price: "0", priceCurrency: "USD" },
+};
+
+const faqLd = {
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  mainEntity: faqs.map((item) => ({
+    "@type": "Question",
+    name: item.q,
+    acceptedAnswer: { "@type": "Answer", text: item.a },
+  })),
+};
 ---
 
-<Base
-  title="DeskShift — Your desk, in the menu bar"
-  description="A calm, Mac-native menu-bar app for IKEA IDÅSEN and Linak Bluetooth standing desks. One price. Lifetime."
->
+<Base title={title} description={description} ogImage="/deskshift/og.png">
+  <Fragment slot="head">
+    <script type="application/ld+json" set:html={JSON.stringify(softwareLd)} />
+    <script type="application/ld+json" set:html={JSON.stringify(faqLd)} />
+  </Fragment>
+
   <!-- Hero -->
   <section class="space-y-6">
+    <Image
+      src={icon}
+      alt="DeskShift app icon"
+      width={80}
+      height={80}
+      densities={[1, 2, 3]}
+      loading="eager"
+      class="h-20 w-20"
+    />
     <p class="text-sm font-medium tracking-wide text-(--color-accent)">
       DeskShift for macOS
     </p>
@@ -70,8 +178,40 @@ const matrix: Array<{ feature: string; desc: string; free: Cell; pro: Cell }> = 
     </div>
 
     <p class="pt-1 text-xs text-(--color-muted)">
-      For IKEA IDÅSEN &amp; other Linak-based Bluetooth desks. macOS 26 or
-      later.
+      For IKEA IDÅSEN &amp; other Linak-based Bluetooth desks. macOS {MIN_MACOS} or
+      later. Free to download, 14-day Pro trial.
+    </p>
+
+    <Image
+      src={popoverMoving}
+      alt="DeskShift in the Mac menu bar, moving a desk to the Stand position, with the live height shown next to the menu bar icon."
+      widths={[640, 960, 1280]}
+      sizes="(min-width: 48rem) 45rem, 100vw"
+      loading="eager"
+      class="mt-6 w-full rounded-2xl border border-(--color-border)"
+    />
+  </section>
+
+  <!-- What it does -->
+  <section class="mt-20 space-y-16">
+    {
+      features.map((f) => (
+        <div>
+          <h2 class="text-2xl font-semibold tracking-tight">{f.title}</h2>
+          <p class="mt-2 max-w-xl text-lg text-(--color-muted)">{f.body}</p>
+          <Image
+            src={f.image}
+            alt={f.alt}
+            widths={[640, 960, 1280]}
+            sizes="(min-width: 48rem) 45rem, 100vw"
+            class="mt-6 w-full rounded-2xl border border-(--color-border)"
+          />
+        </div>
+      ))
+    }
+    <p class="text-sm text-(--color-muted)">
+      All of this is yours for the 14-day trial. Sit, Stand and manual control
+      stay free after it.
     </p>
   </section>
 
@@ -115,10 +255,14 @@ const matrix: Array<{ feature: string; desc: string; free: Cell; pro: Cell }> = 
                   <div class="mt-0.5 text-xs text-(--color-muted)">{row.desc}</div>
                 </td>
                 <td class="px-4 py-3 text-center">
-                  {row.free === true ? "✓" : row.free === "—" ? "—" : ""}
+                  {row.free ? (
+                    <span aria-label="Included">✓</span>
+                  ) : (
+                    <span class="text-(--color-muted)" aria-label="Not included">✕</span>
+                  )}
                 </td>
                 <td class="px-4 py-3 text-center">
-                  {row.pro === true ? "✓" : row.pro === "—" ? "—" : ""}
+                  <span aria-label="Included">✓</span>
                 </td>
               </tr>
             ))
@@ -128,10 +272,36 @@ const matrix: Array<{ feature: string; desc: string; free: Cell; pro: Cell }> = 
     </div>
 
     <p class="mt-6 text-base">
-      <span class="font-semibold">Pro is a one-time purchase — $19.99 USD.</span>
-      No subscription, no upsells. Every Pro feature today, and every Pro
-      feature added later, stays unlocked on every Mac signed in to your Apple
-      ID.
+      <span class="font-semibold">Pro is a one-time purchase: {PRO_PRICE}.</span>
+      The App Store shows the price in your currency. No subscription, no
+      upsells. Every Pro feature today, and every Pro feature added later, stays
+      unlocked on every Mac signed in to your Apple ID.
+    </p>
+  </section>
+
+  <!-- FAQ -->
+  <section class="mt-20">
+    <h2 class="text-2xl font-semibold tracking-tight">Questions</h2>
+    <div class="mt-6 space-y-4">
+      {
+        faqs.map((item) => (
+          <details class="group rounded-xl border border-(--color-border) bg-(--color-surface) px-5 py-4 [&_summary::-webkit-details-marker]:hidden">
+            <summary class="flex cursor-pointer list-none items-start justify-between gap-4">
+              <span class="font-medium">{item.q}</span>
+              <span
+                class="mt-1 text-(--color-muted) transition group-open:rotate-45"
+                aria-hidden="true"
+              >
+                +
+              </span>
+            </summary>
+            <p class="mt-3 text-(--color-muted)">{item.a}</p>
+          </details>
+        ))
+      }
+    </div>
+    <p class="mt-6 text-sm text-(--color-muted)">
+      Something else? <a href="/deskshift/support">Ask me directly.</a>
     </p>
   </section>
 
@@ -145,4 +315,6 @@ const matrix: Array<{ feature: string; desc: string; free: Cell; pro: Cell }> = 
       <AppStoreBadge />
     </div>
   </section>
+
+  <p class="mt-10 text-xs text-(--color-muted)">{DISCLAIMER}</p>
 </Base>

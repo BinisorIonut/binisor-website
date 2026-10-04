@@ -1,5 +1,6 @@
 ---
 import Base from "../../layouts/Base.astro";
+import { MIN_MACOS } from "../../lib/deskshift";
 
 // The website contact form posts to the SAME Google Form the macOS app uses for
 // in-app feedback (see DeskShift's `FeedbackForm.deskShift` /
@@ -41,7 +42,7 @@ const faqs = [
   },
   {
     q: "Does DeskShift run on iPhone or iPad?",
-    a: "No. DeskShift is macOS only at launch. macOS 26 or later is required.",
+    a: `No. DeskShift is macOS only at launch. macOS ${MIN_MACOS} or later is required.`,
   },
   {
     q: "Do I need to sign in to iCloud?",

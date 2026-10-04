@@ -64,31 +64,22 @@ needed — that earlier plan was dropped.
 
 ---
 
-## 4. App Store URL (after Apple approval)
+## 4. App Store URL — ✅ done 2026-10-03
 
-In `src/components/AppStoreBadge.astro`, the badge currently has no link
-(`href = "#"`). Once Apple approves DeskShift and gives you the canonical URL
-(looks like `https://apps.apple.com/app/deskshift/id123456789`):
+The badge links to the App Store through `appStoreUrl()` in
+`src/lib/deskshift.ts`. Set `PROVIDER_TOKEN` there (App Store Connect → App
+Analytics → campaigns) to tag every link with a campaign name.
 
-- Update the default `href` in `AppStoreBadge.astro`, OR
-- Pass the URL where the badge is used:
-  ```astro
-  <AppStoreBadge href="https://apps.apple.com/app/deskshift/id..." />
-  ```
+On 1.3.0 release day, change `MIN_MACOS` in the same file to `"15"`.
 
 ---
 
-## 5. Image assets (optional but nice)
+## 5. Image assets — ✅ done 2026-10-03
 
-Drop these PNGs into `public/`:
-- `apple-touch-icon.png` — 180×180, no transparency. Used by iOS/macOS when
-  the site is pinned to home screen.
-- `og-default.png` — 1200×630. Used for link previews on Twitter, LinkedIn,
-  Slack, iMessage, etc.
-- `deskshift-icon.png` — 1024×1024. Hero image on `/deskshift`.
-
-Easiest source: export from the finalized DeskShift app icon. Both PNG and
-WebP work — keep them under 200 KB.
+`apple-touch-icon.png`, `og-default.png` and `deskshift/og.png` are in
+`public/`; the icon and screenshots are in `src/assets/deskshift/`. The
+landing page shows them optimized to WebP, and the press kit links to the
+original PNGs.
 
 ---
 
