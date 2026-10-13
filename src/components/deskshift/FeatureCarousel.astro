@@ -14,21 +14,16 @@ export interface Slide {
 
 interface Props {
   slides: Slide[];
-  /** Seconds each slide stays up while the carousel plays by itself. */
-  seconds?: number;
 }
 
-const { slides, seconds = 7 } = Astro.props;
+const { slides } = Astro.props;
 ---
 
-<div
-  class="fc"
-  data-carousel
-  data-offscreen
-  aria-roledescription="carousel"
-  aria-label="DeskShift features"
-  style={`--fc-seconds: ${seconds}s`}
->
+<!-- The runway. It is longer than the carousel by one stretch of scrolling for
+     every slide: the carousel stays in view while the page scrolls through it,
+     and each stretch shows the next slide. -->
+<div class="fc-runway" data-carousel style={`--fc-steps: ${slides.length}`}>
+<div class="fc" aria-roledescription="carousel" aria-label="DeskShift features">
   <ul class="fc-tabs" data-tabs>
     {
       slides.map((slide, i) => (
@@ -87,15 +82,6 @@ const { slides, seconds = 7 } = Astro.props;
           <path d="M14.5 6 8.5 12l6 6"></path>
         </svg>
       </button>
-      <button type="button" data-toggle aria-label="Pause the slideshow">
-        <svg class="when-playing" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-          <rect x="7" y="6" width="3.4" height="12" rx="1.2"></rect>
-          <rect x="13.6" y="6" width="3.4" height="12" rx="1.2"></rect>
-        </svg>
-        <svg class="when-paused" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-          <path d="M9 6.3v11.4a1 1 0 0 0 1.5.86l9.3-5.7a1 1 0 0 0 0-1.72l-9.3-5.7A1 1 0 0 0 9 6.3z"></path>
-        </svg>
-      </button>
       <button type="button" data-step="1" aria-label="Next feature">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
           <path d="m9.5 6 6 6-6 6"></path>
@@ -103,6 +89,7 @@ const { slides, seconds = 7 } = Astro.props;
       </button>
     </div>
   </div>
+</div>
 </div>
 
 <style>
@@ -134,7 +121,9 @@ const { slides, seconds = 7 } = Astro.props;
     transition: border-color 0.3s ease;
   }
   .fc-tab[data-active] {
-    border-color: var(--color-fg);
+    border-color: var(--color-accent);
+    /* Half a pixel more outline, without moving the capsules beside it. */
+    box-shadow: 0 0 0 0.5px var(--color-accent);
   }
 
   .fc-tab button {
@@ -147,16 +136,24 @@ const { slides, seconds = 7 } = Astro.props;
     white-space: nowrap;
     transition: color 0.3s ease;
   }
-  .fc-tab button:hover,
-  .fc-tab[data-active] button {
+  .fc-tab button:hover {
     color: var(--color-fg);
+  }
+  /* The current capsule's name is white over the fill and the page's own
+     colour past it: the letters change where the fill ends. */
+  .fc-tab[data-active] button {
+    background: linear-gradient(to right, #fff calc(var(--fc-fill, 1) * 100%), var(--color-fg) 0);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
   }
 
   .fc-more {
     display: none;
   }
 
-  /* Fills while the slide is up; the next slide follows when it is full. */
+  /* Marks the current feature. Where scrolling picks the slide, it fills as the
+     page scrolls toward the next one. */
   .fc-progress {
     position: absolute;
     inset: 0;
@@ -165,34 +162,12 @@ const { slides, seconds = 7 } = Astro.props;
   .fc-progress span {
     display: block;
     height: 100%;
-    background: color-mix(in srgb, var(--color-accent) 16%, transparent);
+    background: var(--color-accent);
     transform: scaleX(0);
     transform-origin: left;
   }
-  /* Longhands on purpose: the `animation` shorthand would reset the play state
-     and undo the pauses below. */
-  .fc[data-autoplay="on"] [data-active] .fc-progress span {
-    animation-name: fc-fill;
-    animation-duration: var(--fc-seconds);
-    animation-timing-function: linear;
-    animation-fill-mode: forwards;
-  }
-  .fc[data-autoplay="off"] [data-active] .fc-progress span {
-    transform: none;
-  }
-  .fc:is([data-offscreen], :has(:focus-visible)) .fc-progress span {
-    animation-play-state: paused;
-  }
-  @media (hover: hover) {
-    .fc:hover .fc-progress span {
-      animation-play-state: paused;
-    }
-  }
-
-  @keyframes fc-fill {
-    to {
-      transform: none;
-    }
+  .fc-tab[data-active] .fc-progress span {
+    transform: scaleX(var(--fc-fill, 1));
   }
 
   /* The stage: one screenshot per slide, swiped or scrolled sideways. */
@@ -227,7 +202,11 @@ const { slides, seconds = 7 } = Astro.props;
   .fc-shot {
     --pad: 0.5rem;
     position: relative;
+    /* The full width, even where the height below cuts the 8:7 short. */
+    width: 100%;
     aspect-ratio: 8 / 7;
+    /* The script sets this where the carousel is pinned, to fit the window. */
+    max-height: var(--fc-shot-max, none);
     border: 1px solid color-mix(in srgb, var(--color-border) 70%, transparent);
     border-radius: 1.5rem;
     background:
@@ -290,13 +269,13 @@ const { slides, seconds = 7 } = Astro.props;
   .fc-controls button:active {
     transform: scale(0.92);
   }
+  .fc-controls button:disabled {
+    opacity: 0.35;
+    cursor: default;
+  }
   .fc-controls svg {
     width: 1.1rem;
     height: 1.1rem;
-  }
-  .fc:not([data-autoplay="on"]) .when-playing,
-  .fc[data-autoplay="on"] .when-paused {
-    display: none;
   }
 
   @media (min-width: 64rem) {
@@ -362,11 +341,26 @@ const { slides, seconds = 7 } = Astro.props;
       font-weight: 500;
     }
 
+    /* A bar under the current feature, on a faint track. */
+    .fc-tab[data-active] {
+      border-color: color-mix(in srgb, var(--color-border) 70%, transparent);
+      box-shadow: none;
+    }
+    .fc-tab[data-active] button {
+      background: none;
+      color: var(--color-fg);
+    }
     .fc-progress {
-      inset: auto 0 -1px;
-      height: 2px;
+      inset: auto 0 0;
+      height: 3px;
+      overflow: hidden;
+      border-radius: 999px;
+    }
+    .fc-tab[data-active] .fc-progress {
+      background: color-mix(in srgb, var(--color-fg) 14%, transparent);
     }
     .fc-progress span {
+      border-radius: inherit;
       background: var(--color-accent);
     }
 
@@ -380,6 +374,34 @@ const { slides, seconds = 7 } = Astro.props;
     }
   }
 
+  /* Scrolling picks the slide. The `js` class comes from Base.astro, and the
+     script marks the runway data-static when the carousel does not fit under
+     the header: either way, without them this is a plain carousel. */
+  :global(.js) .fc-runway:not([data-static]) {
+    --fc-step: 50vh;
+  }
+  :global(.js) .fc-runway:not([data-static])::after {
+    content: "";
+    display: block;
+    height: calc(var(--fc-steps) * var(--fc-step));
+  }
+  :global(.js) .fc-runway:not([data-static]) .fc {
+    position: sticky;
+    top: var(--fc-top, 5rem);
+  }
+  /* The page's scrolling moves the track. It does not follow a finger: the
+     script turns a sideways swipe into a step. */
+  :global(.js) .fc-runway:not([data-static]) .fc-track {
+    overflow-x: hidden;
+    touch-action: pan-y pinch-zoom;
+  }
+
+  @media (min-width: 64rem) and (max-height: 46rem) {
+    .fc-tab {
+      padding: 0.75rem 0;
+    }
+  }
+
   @media (prefers-reduced-motion: reduce) {
     .fc-more,
     .fc-track {
@@ -390,29 +412,41 @@ const { slides, seconds = 7 } = Astro.props;
 
 <script>
   const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
+  // From this width up the picker sits beside the stage (see the styles).
+  const wide = window.matchMedia("(min-width: 64rem)");
 
-  function setUpCarousel(root: HTMLElement) {
+  function setUpCarousel(runway: HTMLElement) {
+    const root = runway.querySelector<HTMLElement>(".fc")!;
     const track = root.querySelector<HTMLElement>("[data-track]")!;
     const slides = Array.from(track.children) as HTMLElement[];
     const tabList = root.querySelector<HTMLElement>("[data-tabs]")!;
     const tabs = Array.from(root.querySelectorAll<HTMLElement>("[data-tab]"));
     const buttons = tabs.map((tab) => tab.querySelector("button")!);
     const counter = root.querySelector<HTMLElement>("[data-counter]")!;
-    const toggle = root.querySelector<HTMLButtonElement>("[data-toggle]")!;
+    const steppers = Array.from(root.querySelectorAll<HTMLButtonElement>("[data-step]"));
 
     let index = 0;
+    // True while the carousel stays in view and the page's scrolling picks the
+    // slide. It is not where the window is too short to hold the carousel:
+    // there a tap, an arrow or a swipe picks the slide.
+    let pinned = false;
+    // Where the pinned carousel sits, in pixels from the top of the window.
+    let pinTop = 0;
     // True while the carousel scrolls the track itself, so that scrolling is
     // not mistaken for a swipe.
     let scripted = false;
     let scriptedTimer = 0;
 
     const smooth = () => (reducedMotion.matches ? "instant" : "smooth");
+    const lastIndex = slides.length - 1;
 
-    function setAutoplay(on: boolean) {
-      root.dataset.autoplay = on ? "on" : "off";
-      toggle.setAttribute("aria-label", on ? "Pause the slideshow" : "Play the slideshow");
-    }
-    const autoplaying = () => root.dataset.autoplay === "on";
+    // The window's height with the browser's own bars showing. On a phone it
+    // stays the same as they slide away, so the pinned carousel does not jump.
+    const probe = document.createElement("div");
+    probe.style.cssText =
+      "position:fixed;top:0;left:0;width:0;height:100svh;visibility:hidden;pointer-events:none";
+    document.body.append(probe);
+    const windowHeight = () => probe.offsetHeight || window.innerHeight;
 
     function markCurrent() {
       tabs.forEach((tab, i) => {
@@ -422,11 +456,18 @@ const { slides, seconds = 7 } = Astro.props;
       });
       counter.textContent = `${index + 1} / ${slides.length}`;
 
+      // The page has an end in each direction; the plain carousel wraps around.
+      steppers.forEach((button) => {
+        const next = index + Number(button.dataset.step);
+        button.disabled = pinned && (next < 0 || next > lastIndex);
+      });
+
       // Keep the current chip in view where the picker scrolls sideways.
       if (tabList.scrollWidth > tabList.clientWidth) {
-        const tab = tabs[index];
+        const tab = tabs[index].getBoundingClientRect();
+        const list = tabList.getBoundingClientRect();
         tabList.scrollTo({
-          left: tab.offsetLeft - (tabList.clientWidth - tab.offsetWidth) / 2,
+          left: tabList.scrollLeft + tab.left - list.left - (list.width - tab.width) / 2,
           behavior: smooth(),
         });
       }
@@ -439,8 +480,9 @@ const { slides, seconds = 7 } = Astro.props;
       scriptedTimer = window.setTimeout(() => (scripted = false), behavior === "smooth" ? 900 : 80);
     }
 
+    /** Shows a slide of the plain carousel. */
     function show(next: number) {
-      const wraps = next < 0 || next >= slides.length;
+      const wraps = next < 0 || next > lastIndex;
       index = (next + slides.length) % slides.length;
       markCurrent();
 
@@ -458,11 +500,118 @@ const { slides, seconds = 7 } = Astro.props;
       scrollTrack(smooth());
     }
 
-    // A swipe or a sideways scroll: follow it, and stop playing.
+    /** How far the page scrolls while the carousel stays in view. */
+    const runwayLength = () => runway.offsetHeight - root.offsetHeight;
+
+    /** Shows the slide the page has scrolled to. */
+    function follow() {
+      if (!pinned) return;
+      const passed = pinTop - runway.getBoundingClientRect().top;
+      const position = Math.min(Math.max(passed / runwayLength(), 0), 1) * slides.length;
+      const next = Math.min(lastIndex, Math.floor(position));
+      root.style.setProperty("--fc-fill", Math.min(position - next, 1).toFixed(3));
+      if (next === index) return;
+      index = next;
+      markCurrent();
+      scrollTrack(smooth());
+    }
+
+    /** Goes to a slide: where the page's scrolling picks it, by scrolling there. */
+    function go(next: number) {
+      if (!pinned) {
+        show(next);
+        return;
+      }
+      const target = Math.min(Math.max(next, 0), lastIndex);
+      const start = runway.getBoundingClientRect().top + window.scrollY - pinTop;
+      // A little way into the slide's stretch, so it is clearly the current one.
+      const into = ((target + 0.04) / slides.length) * runwayLength();
+      window.scrollTo({ top: Math.ceil(start + into), behavior: smooth() });
+    }
+
+    /** The picker's height beside the stage, with its longest description open. */
+    function pickerHeight() {
+      const descriptions = tabs.map((tab) => tab.querySelector<HTMLElement>(".fc-more")!);
+      const rows = tabs.reduce((sum, tab, i) => sum + tab.offsetHeight - descriptions[i].offsetHeight, 0);
+      const longest = Math.max(...descriptions.map((more) => more.firstElementChild!.scrollHeight));
+      return rows + longest;
+    }
+
+    // Room left around the pinned carousel, and the least a screenshot may be
+    // squeezed to before the carousel is better left unpinned.
+    const MARGIN = 24;
+    const SMALLEST_SHOT = 220;
+    let arrangedFor = "";
+
+    /** Pins the carousel, with its screenshots as tall as the window allows. */
+    function arrange() {
+      const header = document.querySelector<HTMLElement>(".site-header")?.offsetHeight ?? 0;
+      const room = windowHeight() - header;
+      arrangedFor = `${window.innerWidth} ${windowHeight()}`;
+
+      // Measure it as it would be pinned, with the screenshots at full height.
+      runway.removeAttribute("data-static");
+      runway.style.removeProperty("--fc-shot-max");
+      const beside = wide.matches;
+      const shot = slides[0].querySelector<HTMLElement>(".fc-shot")!.offsetHeight;
+      // What stands with a screenshot: the controls and, under the picker, the
+      // picker and the longest caption too.
+      const rest = (beside ? root.querySelector<HTMLElement>(".fc-stage")! : root).offsetHeight - shot;
+      const fitted = Math.min(shot, room - MARGIN - rest);
+      const height = Math.max(rest + fitted, beside ? pickerHeight() : 0);
+
+      pinned = fitted >= SMALLEST_SHOT && height + MARGIN <= room;
+      runway.toggleAttribute("data-static", !pinned);
+
+      if (pinned) {
+        runway.style.setProperty("--fc-shot-max", `${Math.floor(fitted)}px`);
+        pinTop = Math.round(header + (room - height) / 2);
+        runway.style.setProperty("--fc-top", `${pinTop}px`);
+        follow();
+      } else {
+        root.style.removeProperty("--fc-fill");
+      }
+      markCurrent();
+      scrollTrack("instant");
+    }
+
+    let queued = false;
+    window.addEventListener(
+      "scroll",
+      () => {
+        if (!pinned || queued) return;
+        queued = true;
+        requestAnimationFrame(() => {
+          queued = false;
+          follow();
+        });
+      },
+      { passive: true },
+    );
+    window.addEventListener("resize", () => {
+      if (arrangedFor !== `${window.innerWidth} ${windowHeight()}`) arrange();
+    });
+
+    // Pinned, the track does not scroll under a finger: a sideways swipe steps
+    // to the next slide or the one before.
+    let swipe: { x: number; y: number } | null = null;
+    track.addEventListener("pointerdown", (event) => {
+      swipe = pinned && event.pointerType === "touch" ? { x: event.clientX, y: event.clientY } : null;
+    });
+    track.addEventListener("pointercancel", () => (swipe = null));
+    track.addEventListener("pointerup", (event) => {
+      if (!swipe) return;
+      const across = event.clientX - swipe.x;
+      const down = event.clientY - swipe.y;
+      swipe = null;
+      if (Math.abs(across) > 40 && Math.abs(across) > Math.abs(down) * 1.5) go(index + (across < 0 ? 1 : -1));
+    });
+
+    // A swipe or a sideways scroll of the plain carousel: follow it.
     track.addEventListener(
       "scroll",
       () => {
-        if (scripted) return;
+        if (scripted || pinned) return;
         const nearest = slides.reduce(
           (best, slide, i) =>
             Math.abs(slide.offsetLeft - track.scrollLeft) <
@@ -473,7 +622,6 @@ const { slides, seconds = 7 } = Astro.props;
         );
         if (nearest === index) return;
         index = nearest;
-        setAutoplay(false);
         markCurrent();
       },
       { passive: true },
@@ -482,43 +630,26 @@ const { slides, seconds = 7 } = Astro.props;
     new ResizeObserver(() => scrollTrack("instant")).observe(track);
 
     buttons.forEach((button, i) => {
-      button.addEventListener("click", () => {
-        setAutoplay(false);
-        show(i);
-      });
+      button.addEventListener("click", () => go(i));
       button.addEventListener("keydown", (event) => {
         const steps: Record<string, number> = { ArrowRight: 1, ArrowDown: 1, ArrowLeft: -1, ArrowUp: -1 };
         const step = steps[event.key];
         if (!step) return;
         event.preventDefault();
-        setAutoplay(false);
-        show(index + step);
-        buttons[index].focus();
+        const next = pinned
+          ? Math.min(Math.max(index + step, 0), lastIndex)
+          : (index + step + slides.length) % slides.length;
+        go(next);
+        buttons[next].focus({ preventScroll: true });
       });
     });
 
-    root.querySelectorAll<HTMLButtonElement>("[data-step]").forEach((button) =>
-      button.addEventListener("click", () => {
-        setAutoplay(false);
-        show(index + Number(button.dataset.step));
-      }),
+    steppers.forEach((button) =>
+      button.addEventListener("click", () => go(index + Number(button.dataset.step))),
     );
 
-    toggle.addEventListener("click", () => setAutoplay(!autoplaying()));
-
-    // The progress bar is the timer: when it has filled, move on.
-    root.addEventListener("animationend", (event) => {
-      if (!(event.target as Element).matches("[data-progress]")) return;
-      if (autoplaying()) show(index + 1);
-    });
-
-    // Play only while the carousel is on screen, and fetch the screenshots just
-    // before it gets there so no slide arrives empty.
-    new IntersectionObserver(
-      ([entry]) => root.toggleAttribute("data-offscreen", !entry.isIntersecting),
-      { threshold: 0.35 },
-    ).observe(root);
-
+    // Fetch the screenshots just before the carousel comes into view, so no
+    // slide arrives empty.
     const nearby = new IntersectionObserver(
       ([entry]) => {
         if (!entry.isIntersecting) return;
@@ -527,9 +658,9 @@ const { slides, seconds = 7 } = Astro.props;
       },
       { rootMargin: "600px 0px" },
     );
-    nearby.observe(root);
+    nearby.observe(runway);
 
-    setAutoplay(!reducedMotion.matches);
+    arrange();
   }
 
   document.querySelectorAll<HTMLElement>("[data-carousel]").forEach(setUpCarousel);
