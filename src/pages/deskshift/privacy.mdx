@@ -56,6 +56,12 @@ If you enable the Posture Coach, DeskShift uses local system notifications to re
 
 You can revoke notification permission any time in **Settings → Notifications → DeskShift**.
 
+## Posture Coach and your activity
+
+The Posture Coach can hold off while you're on a call, while your Mac is locked, or while you're away from it. To know that, DeskShift asks macOS three things: whether a microphone is in use, whether the screen is locked or off, and how long ago the keyboard, mouse, or trackpad was last used.
+
+That is all it learns. DeskShift never accesses the microphone or any audio, and it never sees what you type or click. These checks happen on your Mac, and nothing about them is sent to me or to any server.
+
 ## Feedback
 
 DeskShift has an in-app feedback form. When you tap **Send Feedback**, the app sends the following to a Google Form:
@@ -74,7 +80,7 @@ Google operates Google Forms. I use it as a lightweight inbox for support and pr
 
 ## App Store update checks
 
-DeskShift checks Apple's public iTunes Lookup API about once a day to see whether a newer App Store version exists. The request includes the DeskShift App Store ID and your storefront country, so the app compares against the version you can actually install. The result is stored locally and isn't synced.
+DeskShift checks Apple's public iTunes Lookup API about once a day to see whether a newer App Store version exists. The request includes the DeskShift App Store ID and your storefront country, so the app compares against the version you can actually install. The result is stored locally and isn't synced. When a newer version is available, DeskShift shows a badge on its menu bar icon and one local notification.
 
 ## Purchases
 

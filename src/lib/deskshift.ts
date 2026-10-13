@@ -14,8 +14,15 @@ export function appStoreUrl(campaign = "website"): string {
   return `${base}?pt=${PROVIDER_TOKEN}&ct=${encodeURIComponent(campaign)}&mt=12`;
 }
 
-// The minimum of the build that is live on the App Store (1.3.0, since 2026-10-13).
+// The version that is live on the App Store, and the day it went live.
+export const VERSION = "1.3.0";
+export const VERSION_DATE = "October 13, 2026";
+
+// The minimum of the build that is live on the App Store.
 export const MIN_MACOS = "15";
+
+// The languages the app speaks, English included.
+export const LANGUAGES = 47;
 
 // The price of Pro. The App Store converts it for every other country. Keep it
 // in step with the In-App Purchase's price schedule in App Store Connect.

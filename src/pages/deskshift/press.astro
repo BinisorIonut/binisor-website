@@ -4,16 +4,22 @@ import Base from "../../layouts/Base.astro";
 import {
   appStoreUrl,
   DISCLAIMER,
+  LANGUAGES,
   MIN_MACOS,
   PRO_PRICE,
   SUPPORT_EMAIL,
+  VERSION,
+  VERSION_DATE,
 } from "../../lib/deskshift";
 
+// The App Store's own screenshots of the current version, 2880 × 1800.
 import icon from "../../assets/deskshift/icon.png";
 import menuBar from "../../assets/deskshift/menu-bar.png";
 import popoverMoving from "../../assets/deskshift/popover-moving.png";
 import positionEditor from "../../assets/deskshift/position-editor.png";
 import postureCoach from "../../assets/deskshift/posture-coach.png";
+import pauseWhile from "../../assets/deskshift/pause-while.png";
+import deskButtonGestures from "../../assets/deskshift/desk-button-gestures.png";
 import keyboardShortcuts from "../../assets/deskshift/keyboard-shortcuts.png";
 
 const storeUrl = appStoreUrl("press");
@@ -22,10 +28,11 @@ const facts: Array<{ label: string; value: string; href?: string }> = [
   { label: "App", value: "DeskShift" },
   { label: "Made by", value: "Ionut Binisor, independent developer, Bucharest, Romania" },
   { label: "Platform", value: `macOS ${MIN_MACOS} or later, Mac App Store only` },
+  { label: "Current version", value: `${VERSION}, released ${VERSION_DATE}` },
   { label: "First released", value: "July 5, 2026" },
   { label: "Price", value: `Free to download. Pro is a one-time purchase: ${PRO_PRICE}. Every install starts with a 14-day full Pro trial.` },
   { label: "Works with", value: "IKEA IDÅSEN (the tested desk). Other desks with a Linak Bluetooth controller on a best-effort basis." },
-  { label: "Languages", value: "English and 39 more" },
+  { label: "Languages", value: `English and ${LANGUAGES - 1} more` },
   { label: "Privacy", value: "No account, no analytics, no tracking, no ads" },
   { label: "Mac App Store", value: "apps.apple.com/app/deskshift/id6773494854", href: storeUrl },
   { label: "Contact", value: SUPPORT_EMAIL, href: `mailto:${SUPPORT_EMAIL}` },
@@ -33,12 +40,25 @@ const facts: Array<{ label: string; value: string; href?: string }> = [
 
 const highlights = [
   "Move the desk from the menu bar, with the live height next to the icon.",
-  "Up to 12 named memory positions, each with its own icon.",
-  "Posture Coach: reminders to switch positions, or the desk moves itself on a schedule.",
+  "Up to 12 named memory positions, each with its own icon, as a grid or a list in the order you choose.",
+  "Posture Coach: reminders to switch positions, or the desk moves itself on a schedule, after a 10-second countdown you can skip or snooze.",
+  "The coach waits while you're on a call or the Mac is locked.",
   "Global keyboard shortcuts for every position, and for up, down and stop.",
+  "Gestures on the desk's own button: a double-tap for Sit or Stand, or a tap pattern of your own for any position.",
   "Desk actions in Spotlight, the Shortcuts app and Siri.",
-  "Double-tap the desk's own button to jump to Sit or Stand.",
   "iCloud sync across Macs, and more than one desk.",
+];
+
+// What the current version brought. From the app's own release notes.
+const news = [
+  "A 10-second countdown before every automatic move. Skip or snooze it from the menu bar, the notification or the desk's own button.",
+  "Posture Coach waits while you're on a call or the Mac is locked, and can leave time away from the Mac out of the intervals.",
+  "The menu bar popover shows how long you've been sitting or standing, and when the next move comes.",
+  "Any memory position can have its own gesture on the desk's button.",
+  "Memory positions reorder by drag and drop, and show as a grid or a list.",
+  "The desk reconnects by itself when it's back in range or Bluetooth is turned back on.",
+  "A badge on the menu bar icon and a notification when a new version is available.",
+  `Runs on macOS ${MIN_MACOS} and later (the previous version needed macOS 26), in ${LANGUAGES} languages.`,
 ];
 
 // Each tile shows an optimized thumbnail and links to the original PNG, which
@@ -49,6 +69,8 @@ const images = [
   { image: popoverMoving, file: "deskshift-moving.png", caption: "Moving to Stand" },
   { image: positionEditor, file: "deskshift-position-editor.png", caption: "Editing a memory position" },
   { image: postureCoach, file: "deskshift-posture-coach.png", caption: "Posture Coach" },
+  { image: pauseWhile, file: "deskshift-posture-coach-pause-while.png", caption: "Posture Coach: countdown and Pause While" },
+  { image: deskButtonGestures, file: "deskshift-desk-button-gestures.png", caption: "Desk button gestures" },
   { image: keyboardShortcuts, file: "deskshift-keyboard-shortcuts.png", caption: "Keyboard shortcuts" },
 ];
 ---
@@ -86,8 +108,9 @@ const images = [
       the menu bar, remembers up to 12 named heights, and moves the desk from a
       tap, a keyboard shortcut, Spotlight, the Shortcuts app or Siri. Its
       Posture Coach reminds you to switch positions, or moves the desk for you
-      on a schedule you set. There is no account, no tracking and no
-      subscription: the basics are free and Pro is a one-time purchase.
+      on a schedule you set, and waits while you're on a call. There is no
+      account, no tracking and no subscription: the basics are free and Pro is
+      a one-time purchase.
     </p>
   </section>
 
@@ -111,6 +134,14 @@ const images = [
     <h2 class="text-2xl font-semibold tracking-tight">What it does</h2>
     <ul class="mt-4 list-disc space-y-1 pl-5 text-(--color-muted)">
       {highlights.map((line) => <li>{line}</li>)}
+    </ul>
+  </section>
+
+  <section class="mt-16">
+    <h2 class="text-2xl font-semibold tracking-tight">New in version {VERSION}</h2>
+    <p class="mt-2 text-(--color-muted)">Released {VERSION_DATE}.</p>
+    <ul class="mt-4 list-disc space-y-1 pl-5 text-(--color-muted)">
+      {news.map((line) => <li>{line}</li>)}
     </ul>
   </section>
 

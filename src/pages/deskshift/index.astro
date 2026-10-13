@@ -8,14 +8,19 @@ import type { Slide } from "../../components/deskshift/FeatureCarousel.astro";
 import {
   appStoreUrl,
   DISCLAIMER,
+  LANGUAGES,
   MIN_MACOS,
   PRO_PRICE,
+  VERSION,
+  VERSION_DATE,
 } from "../../lib/deskshift";
 
 import icon from "../../assets/deskshift/icon.png";
-// Window captures at 2x, with their shadow and a transparent background.
+// Window captures of the current version, with their shadow and a transparent
+// background: Settings at 2x, the popover at 3x.
 import positions from "../../assets/deskshift/screens/positions.png";
 import postureCoach from "../../assets/deskshift/screens/posture-coach.png";
+import pauseWhile from "../../assets/deskshift/screens/pause-while.png";
 import shortcuts from "../../assets/deskshift/screens/shortcuts.png";
 import gestures from "../../assets/deskshift/screens/gestures.png";
 import menuBar from "../../assets/deskshift/screens/menu-bar.png";
@@ -30,17 +35,24 @@ const features: Slide[] = [
   {
     name: "Memory positions",
     title: "Every height you use, one tap away",
-    body: "Save up to 12 positions of your own, name them, and jump to any of them from the menu bar. No holding a button, no guessing the height.",
+    body: "Save up to 12 positions of your own, name them, and jump to any of them from the menu bar. Drag them into your order, and show them as a grid or a list.",
     image: positions,
-    alt: "DeskShift's position editor in the menu bar popover: a Stand position at 114 cm with its keyboard shortcut and Posture Coach schedule.",
+    alt: "DeskShift's position editor in the menu bar popover: a Stand position at 114.5 cm with its keyboard shortcut and Posture Coach schedule.",
     maxWidth: 27,
   },
   {
     name: "Posture Coach",
     title: "A standing desk that gets you standing",
-    body: "Posture Coach reminds you to switch positions on your schedule. Turn on automatic movement and the desk raises or lowers itself.",
+    body: "Choose how long you sit and how long you stand. When it's time, the coach reminds you, or moves the desk for you. The menu bar shows how long you've been sitting and when the next move comes.",
     image: postureCoach,
-    alt: "Posture Coach settings: sitting and standing intervals, a schedule with active hours, and automatic desk movement switched on.",
+    alt: "Posture Coach settings: sitting for 27 minutes with the desk rising at 19:43, intervals of 45 minutes sitting and 15 standing, and a schedule from 09:00 to 20:00 every day.",
+  },
+  {
+    name: "Calls and countdown",
+    title: "A coach that knows when to wait",
+    body: "On a call? The desk waits until it ends. Mac locked? It stays put. A 10-second countdown comes before every automatic move: skip or snooze it from the menu bar, the notification or the desk's own button.",
+    image: pauseWhile,
+    alt: "Posture Coach settings: automatic desk movement with a countdown before moving, and Pause While switches for a call, a locked Mac and time away from the Mac.",
   },
   {
     name: "Keyboard shortcuts",
@@ -54,14 +66,14 @@ const features: Slide[] = [
     title: "The desk's own button, with shortcuts",
     body: "Tap the physical button in a short sequence and the desk moves to a memory position. Give any position its own gesture of 2 to 5 up and down taps.",
     image: gestures,
-    alt: "Interactions settings: desk button gestures, with two taps down for Sit, two taps up for Stand and three taps up for Max.",
+    alt: "Interactions settings: desk button gestures, with two taps down for Sit, two taps up for Stand, three taps up for Max and three taps down for Min.",
   },
   {
     name: "Menu bar",
     title: "Your height, at a glance",
     body: "Show an icon, the live desk height, or both in the menu bar, in centimetres or inches. You also choose what each position card shows.",
     image: menuBar,
-    alt: "Menu Bar settings: a choice of icon, live height or both, precision and unit, and what each memory position card shows.",
+    alt: "Menu Bar settings: a choice of icon, live height or both, precision and unit, a grid or list layout, and what each memory position card shows.",
   },
   {
     name: "Shortcuts, Spotlight, Siri",
@@ -73,10 +85,46 @@ const features: Slide[] = [
   {
     name: "More than one desk",
     title: "Every desk you use",
-    body: "Pair each desk once and switch between them in a tap. DeskShift reconnects to the last one by itself, and iCloud keeps your desks and positions in step across your Macs.",
+    body: "Pair each desk once and switch between them in a tap. Your desk reconnects by itself when you're back in range, and iCloud keeps your desks and positions in step across your Macs.",
     image: multiDesk,
-    alt: "The menu bar popover with its sidebar open: a saved desk, connected, and a button to scan for new desks.",
+    alt: "The menu bar popover with its sidebar open: a saved desk, connected, a button to scan for new desks, and the Posture Coach's status above the memory positions.",
     maxWidth: 40,
+  },
+];
+
+// What the current version brought, by theme. From the app's own release notes.
+const news = [
+  {
+    title: "A Posture Coach you can trust",
+    changes: [
+      "A 10-second countdown before every automatic move. Skip or snooze it from the menu bar, the notification or the desk's own button.",
+      "The coach waits while you're on a call or your Mac is locked, and can leave time away from your Mac out of your intervals.",
+      "The menu bar shows how long you've been sitting or standing, and when the next move comes.",
+    ],
+  },
+  {
+    title: "Your positions, your way",
+    changes: [
+      "Give any memory position its own gesture on the desk's button.",
+      "Drag positions into your order, and show them as a grid or a list.",
+      "Choose what each card and the menu bar show.",
+    ],
+  },
+  {
+    title: "Smoother every day",
+    changes: [
+      "Your desk reconnects by itself when it's back in range or Bluetooth is turned back on.",
+      "Release a held keyboard shortcut and the desk stops. Every time.",
+      "A badge in the menu bar tells you when a new version is ready.",
+    ],
+  },
+  {
+    title: "More Macs, more languages",
+    changes: [
+      `Runs on macOS ${MIN_MACOS} and later.`,
+      `Now in ${LANGUAGES} languages.`,
+      "Settings, redesigned: Menu Bar, Interactions, Keyboard Shortcuts, Automation and Posture Coach each have their own place.",
+    ],
   },
 ];
 
@@ -94,7 +142,7 @@ const pillars = [
   },
   {
     title: "Native Mac feel",
-    body: "Menu bar, SF Symbols, iCloud sync. Built in SwiftUI, in 40 languages.",
+    body: `Menu bar, SF Symbols, iCloud sync. Built in SwiftUI, in ${LANGUAGES} languages.`,
     icon: '<rect x="3" y="4.5" width="18" height="15" rx="3"/><path d="M3 9.5h18M13.5 7h4"/>',
   },
   {
@@ -147,7 +195,7 @@ const faqs = [
   },
   {
     q: "Will the desk move on its own?",
-    a: "Only on the schedule you set. Posture Coach can remind you, move the desk for you, or both, inside the hours and days you choose.",
+    a: "Only on the schedule you set. Posture Coach can remind you, move the desk for you, or both, inside the hours and days you choose. A 10-second countdown comes before every automatic move, so you can skip or snooze it, and the coach waits while you're on a call or your Mac is locked.",
   },
   {
     q: "What does DeskShift know about me?",
@@ -165,6 +213,7 @@ const softwareLd = {
   name: "DeskShift",
   description,
   operatingSystem: `macOS ${MIN_MACOS} or later`,
+  softwareVersion: VERSION,
   applicationCategory: "UtilitiesApplication",
   url: new URL("/deskshift/", Astro.site).toString(),
   image: new URL("/deskshift/og.png", Astro.site).toString(),
@@ -210,10 +259,16 @@ const faqLd = {
         class="rise h-20 w-20 drop-shadow-xl"
       />
       <p
-        class="rise text-sm font-medium tracking-wide text-(--color-accent)"
+        class="rise flex flex-wrap items-center gap-x-3 gap-y-2 text-sm font-medium tracking-wide text-(--color-accent)"
         style="--rise-delay: 60ms"
       >
         DeskShift for macOS
+        <a
+          href="#whats-new"
+          class="rounded-full bg-(--color-accent)/12 px-3 py-1 text-xs font-semibold tracking-normal no-underline transition-colors hover:bg-(--color-accent)/20 hover:no-underline"
+        >
+          New: version {VERSION} ↓
+        </a>
       </p>
       <h1
         class="rise text-[2.5rem] leading-[1.05] font-semibold tracking-tight sm:text-6xl"
@@ -261,6 +316,38 @@ const faqLd = {
       All of this is yours for the 14-day trial. Sit, Stand and manual control
       stay free after it.
     </p>
+  </section>
+
+  <!-- What's new -->
+  <section
+    id="whats-new"
+    class="mt-28 rounded-[2rem] border border-(--color-border)/70 bg-(--color-surface) p-8 sm:mt-40 sm:p-12"
+    data-reveal
+  >
+    <div class="grid gap-10 lg:grid-cols-[minmax(0,1fr)_minmax(0,2fr)] lg:gap-16">
+      <div>
+        <p class="text-sm font-medium tracking-wide text-(--color-accent)">
+          Version {VERSION} · {VERSION_DATE}
+        </p>
+        <h2 class="mt-3 text-4xl font-semibold tracking-tight sm:text-5xl">What's new.</h2>
+        <p class="mt-4 text-lg text-(--color-muted)">
+          The biggest update so far, and a free one: get it in the Mac App
+          Store.
+        </p>
+      </div>
+      <div class="grid gap-x-10 gap-y-8 sm:grid-cols-2">
+        {
+          news.map((group) => (
+            <div>
+              <h3 class="text-lg font-semibold tracking-tight">{group.title}</h3>
+              <ul class="mt-3 space-y-2.5 text-(--color-muted)">
+                {group.changes.map((line) => <li>{line}</li>)}
+              </ul>
+            </div>
+          ))
+        }
+      </div>
+    </div>
   </section>
 
   <!-- Pillars -->

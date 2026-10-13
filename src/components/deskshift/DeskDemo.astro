@@ -119,7 +119,7 @@ const tickY = (height: number) => FLOOR - height * SCALE;
           <rect x="3" y="5" width="18" height="14" rx="3.5"></rect>
           <path d="M9.5 5v14M5.9 9h1.3M5.9 12h1.3"></path>
         </svg>
-        <strong>Desk 9029</strong>
+        <strong>Office Desk</strong>
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" aria-hidden="true">
           <circle cx="12" cy="12" r="6.6"></circle>
           <circle cx="12" cy="12" r="2.6"></circle>
@@ -141,7 +141,6 @@ const tickY = (height: number) => FLOOR - height * SCALE;
         </button>
       </div>
 
-      <p class="demo-label">Memory Positions</p>
       <div class="demo-cards">
         {
           positions.map((position) => (
@@ -371,13 +370,6 @@ const tickY = (height: number) => FLOOR - height * SCALE;
   .demo-round:active {
     background: var(--ui-blue);
     transform: scale(0.94);
-  }
-
-  .demo-label {
-    margin-bottom: 0.5rem;
-    color: var(--ui-muted);
-    font-size: 0.7rem;
-    font-weight: 600;
   }
 
   .demo-cards {

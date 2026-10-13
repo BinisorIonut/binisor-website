@@ -70,7 +70,12 @@ The badge links to the App Store through `appStoreUrl()` in
 `src/lib/deskshift.ts`. Set `PROVIDER_TOKEN` there (App Store Connect → App
 Analytics → campaigns) to tag every link with a campaign name.
 
-On 1.3.0 release day, change `MIN_MACOS` in the same file to `"15"`.
+At every release, update `VERSION` and `VERSION_DATE` in the same file, and
+`MIN_MACOS` and `LANGUAGES` when they change (1.3.0, 2026-10-13: macOS 15, 47
+languages). The landing page's "What's new" list and the press kit's "New in
+version" list are written by hand from the app's release notes; the
+screenshots come from the app's screenshot script
+(`DeskShift/docs/marketing/AppStoreScreenshots.md`).
 
 ---
 
