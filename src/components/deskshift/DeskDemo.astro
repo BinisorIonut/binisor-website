@@ -12,10 +12,12 @@ const positions = [
   { id: "max", name: "Max", height: 127 },
 ];
 
-// The drawing: 1 cm is SCALE units, the floor sits at FLOOR, and the desk is
-// drawn at its highest point. The script slides it down from there.
-const SCALE = 1.6;
-const FLOOR = 270;
+// The drawing is to scale, so Sit and Stand look as they do in a room: 1 cm is
+// SCALE units, across and up, and the tabletop is the IDÅSEN's 160 cm. The
+// floor sits at FLOOR, and the desk is drawn at its highest point. The script
+// slides it down from there.
+const SCALE = 0.9;
+const FLOOR = 144;
 const top = FLOOR - MAX * SCALE;
 const startOffset = (MAX - START) * SCALE;
 const tickY = (height: number) => FLOOR - height * SCALE;
@@ -34,7 +36,7 @@ const tickY = (height: number) => FLOOR - height * SCALE;
   <div class="demo-glow" aria-hidden="true"></div>
 
   <div class="demo-scene" aria-hidden="true">
-    <svg viewBox="0 0 212 300" fill="none">
+    <svg viewBox="0 0 212 150" fill="none">
       <defs>
         <linearGradient id="demo-wood" x1="0" y1="0" x2="1" y2="0">
           <stop offset="0" stop-color="#a5856c"></stop>
@@ -45,7 +47,7 @@ const tickY = (height: number) => FLOOR - height * SCALE;
           <stop offset="1" stop-color="#12306b"></stop>
         </linearGradient>
         <clipPath id="demo-above-feet">
-          <rect x="0" y="-40" width="212" height={FLOOR - 6 + 40}></rect>
+          <rect x="0" y="-40" width="212" height={FLOOR - 4.5 + 40}></rect>
         </clipPath>
       </defs>
 
@@ -55,7 +57,7 @@ const tickY = (height: number) => FLOOR - height * SCALE;
         positions.map((position) => (
           <g class="tick" data-tick={position.height}>
             <line x1="161" x2="171" y1={tickY(position.height)} y2={tickY(position.height)} />
-            <text x="176" y={tickY(position.height) + 3.5}>
+            <text x="176" y={tickY(position.height) + 3.3}>
               {position.name}
             </text>
           </g>
@@ -67,23 +69,24 @@ const tickY = (height: number) => FLOOR - height * SCALE;
       <g clip-path="url(#demo-above-feet)">
         <g data-desk transform={`translate(0 ${startOffset})`}>
           <!-- Laptop and mug -->
-          <rect x="50" y={top - 34} width="50" height="31" rx="3" fill="url(#demo-screen)" stroke="#8e8e93" stroke-width="1.5"></rect>
-          <rect x="43" y={top - 3} width="64" height="3" rx="1.5" fill="#aeaeb2"></rect>
-          <rect x="118" y={top - 12} width="10" height="12" rx="2" fill="#d1d1d6"></rect>
-          <path d={`M128 ${top - 9.5}h2.5a2 2 0 0 1 2 2v1a2 2 0 0 1 -2 2H128`} stroke="#d1d1d6" stroke-width="1.5"></path>
+          <rect x="50" y={top - 21} width="29" height="19" rx="2" fill="url(#demo-screen)" stroke="#8e8e93" stroke-width="1.2"></rect>
+          <rect x="46" y={top - 2} width="37" height="2" rx="1" fill="#aeaeb2"></rect>
+          <rect x="98" y={top - 8} width="6.5" height="8" rx="1.3" fill="#d1d1d6"></rect>
+          <path d={`M104.5 ${top - 6.4}h1.6a1.3 1.3 0 0 1 1.3 1.3v1a1.3 1.3 0 0 1 -1.3 1.3H104.5`} stroke="#d1d1d6" stroke-width="1.1"></path>
           <!-- Tabletop, frame and the inner leg columns -->
-          <rect x="30" y={top + 11} width="8" height="160" fill="#5d5e64"></rect>
-          <rect x="120" y={top + 11} width="8" height="160" fill="#5d5e64"></rect>
-          <rect x="22" y={top + 7} width="114" height="5" rx="1.5" fill="#3a3b40"></rect>
-          <rect x="8" y={top} width="142" height="7" rx="2" fill="url(#demo-wood)"></rect>
+          <rect x="18" y={top + 7.5} width="6" height="70" fill="#5d5e64"></rect>
+          <rect x="132" y={top + 7.5} width="6" height="70" fill="#5d5e64"></rect>
+          <rect x="14" y={top + 4} width="128" height="4" rx="1.2" fill="#3a3b40"></rect>
+          <rect x="6" y={top} width="144" height="4.5" rx="1.4" fill="url(#demo-wood)"></rect>
         </g>
       </g>
 
-      <!-- Outer leg columns and feet stay on the floor. -->
-      <rect x="27" y={FLOOR - 62} width="14" height="56" rx="2" fill="#44454b"></rect>
-      <rect x="117" y={FLOOR - 62} width="14" height="56" rx="2" fill="#44454b"></rect>
-      <rect x="15" y={FLOOR - 6} width="38" height="6" rx="3" fill="#44454b"></rect>
-      <rect x="105" y={FLOOR - 6} width="38" height="6" rx="3" fill="#44454b"></rect>
+      <!-- Outer leg columns and feet stay on the floor. The columns end just
+           under the frame at the desk's lowest height. -->
+      <rect x="16.5" y={FLOOR - 47} width="9" height="43" rx="1.5" fill="#44454b"></rect>
+      <rect x="130.5" y={FLOOR - 47} width="9" height="43" rx="1.5" fill="#44454b"></rect>
+      <rect x="8" y={FLOOR - 4.5} width="26" height="4.5" rx="2.25" fill="#44454b"></rect>
+      <rect x="122" y={FLOOR - 4.5} width="26" height="4.5" rx="2.25" fill="#44454b"></rect>
 
       <!-- The current height on the rail. -->
       <g data-marker transform={`translate(0 ${startOffset})`}>
@@ -202,7 +205,7 @@ const tickY = (height: number) => FLOOR - height * SCALE;
     position: relative;
     isolation: isolate;
     display: grid;
-    grid-template-columns: minmax(0, 0.72fr) minmax(0, 1.28fr);
+    grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr);
     align-items: end;
     gap: 0.25rem;
     padding: 1rem;
@@ -262,7 +265,7 @@ const tickY = (height: number) => FLOOR - height * SCALE;
   }
   .tick text {
     fill: rgb(235 235 245 / 0.5);
-    font-size: 10.5px;
+    font-size: 9.5px;
     font-weight: 600;
     transition: fill 0.3s ease;
   }
@@ -453,7 +456,7 @@ const tickY = (height: number) => FLOOR - height * SCALE;
       gap: 0.75rem;
     }
     .demo-scene {
-      width: min(100%, 12.5rem);
+      width: min(100%, 16rem);
       margin-inline: auto;
     }
   }
@@ -478,6 +481,16 @@ const tickY = (height: number) => FLOOR - height * SCALE;
   const REST = 2600;
 
   const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
+
+  // How far along a move is at time t (both 0 to 1). A desk's motor picks up
+  // speed, holds it, then slows: RAMP is the share of the time each end takes.
+  const RAMP = 0.2;
+  function glide(t: number) {
+    const cruise = 1 / (1 - RAMP);
+    if (t < RAMP) return (cruise * t * t) / (2 * RAMP);
+    if (t > 1 - RAMP) return 1 - (cruise * (1 - t) ** 2) / (2 * RAMP);
+    return cruise * (t - RAMP / 2);
+  }
 
   function setUpDeskDemo(root: HTMLElement) {
     const min = Number(root.dataset.min);
@@ -546,14 +559,14 @@ const tickY = (height: number) => FLOOR - height * SCALE;
         return;
       }
 
-      const duration = 500 + distance * 30;
+      const duration = 400 + distance * 40;
       const started = performance.now();
       movingCard = card;
       card.classList.add("is-moving");
 
       const step = (now: number) => {
         const t = Math.min(1, (now - started) / duration);
-        const eased = t < 0.5 ? 2 * t * t : 1 - (-2 * t + 2) ** 2 / 2;
+        const eased = glide(t);
         height = from + (target - from) * eased;
         card.style.setProperty("--progress", `${eased * 100}%`);
         render();
