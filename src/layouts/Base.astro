@@ -7,9 +7,18 @@ interface Props {
   title: string;
   description: string;
   ogImage?: string;
+  /** Marketing pages use the wide column; everything else reads at prose width. */
+  wide?: boolean;
+  /** Set when an MDX page names this file as its layout: its front matter carries the props. */
+  frontmatter?: Omit<Props, "frontmatter">;
 }
 
-const { title, description, ogImage = "/og-default.png" } = Astro.props;
+const {
+  title,
+  description,
+  ogImage = "/og-default.png",
+  wide = false,
+} = Astro.props.frontmatter ?? Astro.props;
 const canonical = new URL(Astro.url.pathname, Astro.site).toString();
 const ogImageUrl = new URL(ogImage, Astro.site).toString();
 
@@ -24,6 +33,12 @@ const CF_ANALYTICS_TOKEN = "";
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="generator" content={Astro.generator} />
+    <meta name="theme-color" content="#fbfbfd" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#000000" media="(prefers-color-scheme: dark)" />
+    <!-- Marks that scripts run, so the scroll-reveal styles may hide things. -->
+    <script is:inline>
+      document.documentElement.classList.add("js");
+    </script>
 
     <title>{title}</title>
     <meta name="description" content={description} />
@@ -57,10 +72,46 @@ const CF_ANALYTICS_TOKEN = "";
     <slot name="head" />
   </head>
   <body class="bg-(--color-bg) text-(--color-fg) antialiased">
-    <Header />
-    <main class="mx-auto max-w-3xl px-6 pt-12 pb-24 sm:pt-20">
+    <Header wide={wide} />
+    <main
+      class:list={[
+        "mx-auto px-6 pb-24",
+        wide ? "max-w-6xl pt-10 sm:pt-16" : "max-w-3xl pt-12 sm:pt-20",
+      ]}
+    >
       <slot />
     </main>
-    <Footer />
+    <Footer wide={wide} />
   </body>
 </html>
+
+<script>
+  // Fade sections in as they scroll into view (see [data-reveal] in global.css).
+  const revealed = new IntersectionObserver(
+    (entries) => {
+      for (const entry of entries) {
+        if (!entry.isIntersecting) continue;
+        const element = entry.target;
+        element.classList.add("is-visible");
+        revealed.unobserve(element);
+        // Once it has arrived, hand the element back to its own transitions
+        // (a card's hover lift, for one).
+        element.addEventListener("transitionend", function settle(event) {
+          if (event.target !== element) return;
+          element.removeAttribute("data-reveal");
+          element.removeEventListener("transitionend", settle);
+        });
+      }
+    },
+    { rootMargin: "0px 0px -8% 0px" },
+  );
+  document
+    .querySelectorAll("[data-reveal]")
+    .forEach((element) => revealed.observe(element));
+
+  // The header draws its hairline only once the page has scrolled under it.
+  const markScrolled = () =>
+    document.documentElement.toggleAttribute("data-scrolled", window.scrollY > 8);
+  window.addEventListener("scroll", markScrolled, { passive: true });
+  markScrolled();
+</script>

@@ -1,0 +1,682 @@
+---
+// A working miniature of the menu bar popover, next to a desk that moves with
+// it. The heights are the app's defaults on an IDÅSEN.
+const MIN = 62;
+const MAX = 127;
+const START = 74;
+
+const positions = [
+  { id: "sit", name: "Sit", height: 74 },
+  { id: "stand", name: "Stand", height: 114 },
+  { id: "min", name: "Min", height: 62 },
+  { id: "max", name: "Max", height: 127 },
+];
+
+// The drawing: 1 cm is SCALE units, the floor sits at FLOOR, and the desk is
+// drawn at its highest point. The script slides it down from there.
+const SCALE = 1.6;
+const FLOOR = 270;
+const top = FLOOR - MAX * SCALE;
+const startOffset = (MAX - START) * SCALE;
+const tickY = (height: number) => FLOOR - height * SCALE;
+---
+
+<div
+  class="demo"
+  data-desk-demo
+  data-min={MIN}
+  data-max={MAX}
+  data-start={START}
+  data-scale={SCALE}
+  role="group"
+  aria-label="Interactive demo: move the desk"
+>
+  <div class="demo-glow" aria-hidden="true"></div>
+
+  <div class="demo-scene" aria-hidden="true">
+    <svg viewBox="0 0 212 300" fill="none">
+      <defs>
+        <linearGradient id="demo-wood" x1="0" y1="0" x2="1" y2="0">
+          <stop offset="0" stop-color="#a5856c"></stop>
+          <stop offset="1" stop-color="#7a6050"></stop>
+        </linearGradient>
+        <linearGradient id="demo-screen" x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0" stop-color="#2f7bf0"></stop>
+          <stop offset="1" stop-color="#12306b"></stop>
+        </linearGradient>
+        <clipPath id="demo-above-feet">
+          <rect x="0" y="-40" width="212" height={FLOOR - 6 + 40}></rect>
+        </clipPath>
+      </defs>
+
+      <!-- Saved heights, marked on a rail beside the desk. -->
+      <line x1="166" x2="166" y1={tickY(MAX)} y2={tickY(MIN)} class="rail"></line>
+      {
+        positions.map((position) => (
+          <g class="tick" data-tick={position.height}>
+            <line x1="161" x2="171" y1={tickY(position.height)} y2={tickY(position.height)} />
+            <text x="176" y={tickY(position.height) + 3.5}>
+              {position.name}
+            </text>
+          </g>
+        ))
+      }
+
+      <line x1="4" x2="208" y1={FLOOR} y2={FLOOR} class="floor"></line>
+
+      <g clip-path="url(#demo-above-feet)">
+        <g data-desk transform={`translate(0 ${startOffset})`}>
+          <!-- Laptop and mug -->
+          <rect x="50" y={top - 34} width="50" height="31" rx="3" fill="url(#demo-screen)" stroke="#8e8e93" stroke-width="1.5"></rect>
+          <rect x="43" y={top - 3} width="64" height="3" rx="1.5" fill="#aeaeb2"></rect>
+          <rect x="118" y={top - 12} width="10" height="12" rx="2" fill="#d1d1d6"></rect>
+          <path d={`M128 ${top - 9.5}h2.5a2 2 0 0 1 2 2v1a2 2 0 0 1 -2 2H128`} stroke="#d1d1d6" stroke-width="1.5"></path>
+          <!-- Tabletop, frame and the inner leg columns -->
+          <rect x="30" y={top + 11} width="8" height="160" fill="#5d5e64"></rect>
+          <rect x="120" y={top + 11} width="8" height="160" fill="#5d5e64"></rect>
+          <rect x="22" y={top + 7} width="114" height="5" rx="1.5" fill="#3a3b40"></rect>
+          <rect x="8" y={top} width="142" height="7" rx="2" fill="url(#demo-wood)"></rect>
+        </g>
+      </g>
+
+      <!-- Outer leg columns and feet stay on the floor. -->
+      <rect x="27" y={FLOOR - 62} width="14" height="56" rx="2" fill="#44454b"></rect>
+      <rect x="117" y={FLOOR - 62} width="14" height="56" rx="2" fill="#44454b"></rect>
+      <rect x="15" y={FLOOR - 6} width="38" height="6" rx="3" fill="#44454b"></rect>
+      <rect x="105" y={FLOOR - 6} width="38" height="6" rx="3" fill="#44454b"></rect>
+
+      <!-- The current height on the rail. -->
+      <g data-marker transform={`translate(0 ${startOffset})`}>
+        <line x1="152" x2="161" y1={top} y2={top} class="guide"></line>
+        <circle cx="166" cy={top} r="3.5" class="marker"></circle>
+      </g>
+    </svg>
+  </div>
+
+  <div class="demo-app">
+    <div class="demo-menubar" aria-hidden="true">
+      <span class="demo-menuitem">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round">
+          <path d="M2.5 8h19M6.5 8v10M17.5 8v10M4.5 18h4M15.5 18h4"></path>
+        </svg>
+        <span data-readout>{START}.0 cm</span>
+      </span>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+        <path d="M2.5 9.5a14 14 0 0 1 19 0M5.8 13a9 9 0 0 1 12.4 0M9 16.4a4.3 4.3 0 0 1 6 0"></path>
+        <circle cx="12" cy="19.5" r="1.2" fill="currentColor" stroke="none"></circle>
+      </svg>
+      <svg viewBox="0 0 26 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round">
+        <rect x="1.5" y="7.5" width="19" height="9" rx="2.8"></rect>
+        <rect x="3.7" y="9.7" width="12" height="4.6" rx="1.2" fill="currentColor" stroke="none"></rect>
+        <path d="M23 10.7v2.6"></path>
+      </svg>
+      <span>9:41</span>
+    </div>
+
+    <div class="demo-popover">
+      <div class="demo-head">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" aria-hidden="true">
+          <rect x="3" y="5" width="18" height="14" rx="3.5"></rect>
+          <path d="M9.5 5v14M5.9 9h1.3M5.9 12h1.3"></path>
+        </svg>
+        <strong>Desk 9029</strong>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" aria-hidden="true">
+          <circle cx="12" cy="12" r="6.6"></circle>
+          <circle cx="12" cy="12" r="2.6"></circle>
+          <path d="M12 2.6v2.8M12 18.6v2.8M2.6 12h2.8M18.6 12h2.8M5.4 5.4l2 2M16.6 16.6l2 2M5.4 18.6l2-2M16.6 7.4l2-2"></path>
+        </svg>
+      </div>
+
+      <div class="demo-height">
+        <button type="button" class="demo-round" data-hold="-1" aria-label="Lower the desk while held">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M12 5v14M6 13l6 6 6-6"></path>
+          </svg>
+        </button>
+        <span class="demo-readout" data-readout>{START}.0 cm</span>
+        <button type="button" class="demo-round" data-hold="1" aria-label="Raise the desk while held">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M12 19V5M6 11l6-6 6 6"></path>
+          </svg>
+        </button>
+      </div>
+
+      <p class="demo-label">Memory Positions</p>
+      <div class="demo-cards">
+        {
+          positions.map((position) => (
+            <button
+              type="button"
+              class="demo-card"
+              data-target={position.height}
+              data-position={position.id}
+              aria-label={`Move the desk to ${position.name}, ${position.height} cm`}
+            >
+              {position.id === "sit" && (
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <rect x="7.5" y="3.5" width="9" height="7" rx="1.6" />
+                  <path d="M6 13.5h12M8 13.5V20M16 13.5V20M12 10.5v3" />
+                </svg>
+              )}
+              {position.id === "stand" && (
+                <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                  <circle cx="12" cy="4.6" r="2.2" />
+                  <path d="M9 8.4h6a1 1 0 0 1 1 1v5.3h-1.6V21h-1.9v-5.3h-1V21H9.6v-6.3H8V9.4a1 1 0 0 1 1-1z" />
+                </svg>
+              )}
+              {position.id === "min" && (
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <path d="M12 4v11M7.5 10.5 12 15l4.5-4.5M6 19.5h12" />
+                </svg>
+              )}
+              {position.id === "max" && (
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <path d="M6 4.5h12M12 20V9M7.5 13.5 12 9l4.5 4.5" />
+                </svg>
+              )}
+              <span class="demo-card-name">
+                <span class="when-idle">{position.name}</span>
+                <span class="when-moving">Stop</span>
+              </span>
+              <span class="demo-card-height" data-height={position.height}>
+                {position.height}.0 cm
+              </span>
+            </button>
+          ))
+        }
+      </div>
+    </div>
+  </div>
+
+  <span class="sr-only" role="status" data-status></span>
+</div>
+
+<style>
+  /* The demo keeps the app's dark look in both site themes: it is a picture of
+     the app, like the screenshots further down. */
+  .demo {
+    --ui-fg: #f5f5f7;
+    --ui-muted: rgb(235 235 245 / 0.56);
+    --ui-fill: rgb(255 255 255 / 0.09);
+    --ui-blue: #0a84ff;
+
+    position: relative;
+    isolation: isolate;
+    display: grid;
+    grid-template-columns: minmax(0, 0.72fr) minmax(0, 1.28fr);
+    align-items: end;
+    gap: 0.25rem;
+    padding: 1rem;
+    /* clip, not hidden: a hidden box still scrolls when a button inside takes focus. */
+    overflow: clip;
+    border: 1px solid rgb(255 255 255 / 0.1);
+    border-radius: 1.75rem;
+    background: linear-gradient(160deg, #10131c 0%, #07080c 60%);
+    box-shadow:
+      0 50px 90px -50px rgb(10 90 220 / 0.55),
+      0 30px 60px -40px rgb(0 0 0 / 0.6);
+    color: var(--ui-fg);
+    user-select: none;
+    -webkit-user-select: none;
+  }
+
+  .demo-glow {
+    position: absolute;
+    z-index: -1;
+    inset: -30% -10% auto auto;
+    width: 80%;
+    aspect-ratio: 1;
+    border-radius: 50%;
+    background: radial-gradient(closest-side, rgb(10 132 255 / 0.4), transparent);
+    filter: blur(10px);
+  }
+
+  .demo-scene svg {
+    display: block;
+    width: 100%;
+    height: auto;
+  }
+
+  .rail {
+    stroke: rgb(255 255 255 / 0.2);
+    stroke-width: 1.5;
+  }
+  .floor {
+    stroke: rgb(255 255 255 / 0.16);
+    stroke-width: 1.5;
+    stroke-linecap: round;
+  }
+  .guide {
+    stroke: var(--ui-blue);
+    stroke-width: 1.5;
+    stroke-dasharray: 2 2.5;
+  }
+  .marker {
+    fill: var(--ui-blue);
+    stroke: #07080c;
+    stroke-width: 1.5;
+  }
+  .tick line {
+    stroke: rgb(255 255 255 / 0.35);
+    stroke-width: 1.5;
+    stroke-linecap: round;
+  }
+  .tick text {
+    fill: rgb(235 235 245 / 0.5);
+    font-size: 10.5px;
+    font-weight: 600;
+    transition: fill 0.3s ease;
+  }
+  .tick[data-active] text {
+    fill: var(--ui-fg);
+  }
+
+  .demo-app {
+    display: grid;
+    gap: 0.5rem;
+    align-self: start;
+    min-width: 0;
+  }
+
+  .demo-menubar {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 0.6rem;
+    height: 1.75rem;
+    padding: 0 0.6rem 0 0.25rem;
+    border-radius: 0.6rem;
+    background: rgb(255 255 255 / 0.07);
+    font-size: 0.75rem;
+    font-weight: 600;
+    font-variant-numeric: tabular-nums;
+    white-space: nowrap;
+  }
+  .demo-menubar svg {
+    width: 0.95rem;
+    height: 0.95rem;
+    flex: none;
+  }
+  .demo-menuitem {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    margin-right: auto;
+    padding: 0.15rem 0.5rem;
+    border-radius: 0.4rem;
+    background: rgb(255 255 255 / 0.16);
+  }
+
+  .demo-popover {
+    padding: 0 0.85rem 0.9rem;
+    border: 1px solid rgb(255 255 255 / 0.14);
+    border-radius: 1.1rem;
+    background: rgb(30 30 32 / 0.92);
+    box-shadow: 0 24px 50px -20px rgb(0 0 0 / 0.8);
+    backdrop-filter: blur(20px);
+  }
+
+  .demo-head {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    margin: 0 -0.85rem;
+    padding: 0.7rem 0.85rem;
+    border-bottom: 1px solid rgb(255 255 255 / 0.1);
+    font-size: 0.8rem;
+  }
+  .demo-head svg {
+    width: 1.15rem;
+    height: 1.15rem;
+  }
+  .demo-head strong {
+    flex: 1;
+    font-weight: 700;
+  }
+
+  .demo-height {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.9rem 0 0.8rem;
+  }
+  .demo-readout {
+    font-size: clamp(1.25rem, 5vw, 1.6rem);
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .demo-round {
+    display: grid;
+    place-items: center;
+    width: 2.4rem;
+    height: 2.4rem;
+    border-radius: 50%;
+    background: var(--ui-fill);
+    color: var(--ui-fg);
+    touch-action: manipulation;
+    -webkit-touch-callout: none;
+    transition:
+      background-color 0.2s ease,
+      transform 0.2s var(--ease-out);
+  }
+  .demo-round svg {
+    width: 1.05rem;
+    height: 1.05rem;
+  }
+  .demo-round:hover {
+    background: rgb(255 255 255 / 0.16);
+  }
+  .demo-round:active {
+    background: var(--ui-blue);
+    transform: scale(0.94);
+  }
+
+  .demo-label {
+    margin-bottom: 0.5rem;
+    color: var(--ui-muted);
+    font-size: 0.7rem;
+    font-weight: 600;
+  }
+
+  .demo-cards {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 0.4rem;
+  }
+
+  .demo-card {
+    --progress: 0%;
+    display: grid;
+    justify-items: center;
+    gap: 0.1rem;
+    padding: 0.7rem 0.1rem 0.6rem;
+    border: 1.5px solid transparent;
+    border-radius: 0.8rem;
+    background: linear-gradient(to top, var(--ui-blue) var(--progress), var(--ui-fill) var(--progress));
+    color: var(--ui-fg);
+    touch-action: manipulation;
+    transition:
+      border-color 0.25s ease,
+      transform 0.25s var(--ease-out);
+  }
+  .demo-card svg {
+    width: 1.15rem;
+    height: 1.15rem;
+    margin-bottom: 0.15rem;
+  }
+  .demo-card:hover {
+    border-color: rgb(255 255 255 / 0.22);
+  }
+  .demo-card:active {
+    transform: scale(0.96);
+  }
+  .demo-card.is-moving {
+    border-color: var(--ui-blue);
+    box-shadow: 0 0 22px -6px var(--ui-blue);
+  }
+
+  .demo-card-name {
+    font-size: 0.72rem;
+    font-weight: 700;
+  }
+  .demo-card-height {
+    color: var(--ui-muted);
+    font-size: 0.64rem;
+    font-variant-numeric: tabular-nums;
+    white-space: nowrap;
+  }
+  .when-moving {
+    display: none;
+    color: #ff7ab2;
+  }
+  .when-moving::before {
+    content: "";
+    display: inline-block;
+    width: 0.45rem;
+    height: 0.45rem;
+    margin-right: 0.25rem;
+    border-radius: 1.5px;
+    background: currentColor;
+  }
+  .is-moving .when-idle {
+    display: none;
+  }
+  .is-moving .when-moving {
+    display: inline;
+  }
+  .is-moving .demo-card-height {
+    color: var(--ui-fg);
+  }
+
+  .demo :focus-visible {
+    outline-color: #fff;
+  }
+
+  /* Phones: the desk on top, the controls under the thumb. */
+  @media (max-width: 30rem) {
+    .demo {
+      grid-template-columns: minmax(0, 1fr);
+      gap: 0.75rem;
+    }
+    .demo-scene {
+      width: min(100%, 12.5rem);
+      margin-inline: auto;
+    }
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .demo-glow {
+      animation: demo-drift 14s ease-in-out infinite alternate;
+    }
+  }
+
+  @keyframes demo-drift {
+    to {
+      transform: translate(-35%, 30%) scale(1.15);
+    }
+  }
+</style>
+
+<script>
+  // Centimetres per second while an arrow is held.
+  const HOLD_SPEED = 24;
+  // How long the demo rests between the moves it makes by itself.
+  const REST = 2600;
+
+  const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
+
+  function setUpDeskDemo(root: HTMLElement) {
+    const min = Number(root.dataset.min);
+    const max = Number(root.dataset.max);
+    const scale = Number(root.dataset.scale);
+    let height = Number(root.dataset.start);
+
+    // Heights follow the visitor's number format, as the app follows the Mac's.
+    const number = new Intl.NumberFormat(undefined, {
+      minimumFractionDigits: 1,
+      maximumFractionDigits: 1,
+    });
+    const label = (cm: number) => `${number.format(cm)} cm`;
+
+    const readouts = root.querySelectorAll<HTMLElement>("[data-readout]");
+    const desk = root.querySelector<SVGGElement>("[data-desk]")!;
+    const marker = root.querySelector<SVGGElement>("[data-marker]")!;
+    const ticks = root.querySelectorAll<SVGGElement>("[data-tick]");
+    const cards = root.querySelectorAll<HTMLButtonElement>("[data-target]");
+    const holds = root.querySelectorAll<HTMLButtonElement>("[data-hold]");
+    const status = root.querySelector<HTMLElement>("[data-status]")!;
+
+    root
+      .querySelectorAll<HTMLElement>("[data-height]")
+      .forEach((element) => (element.textContent = label(Number(element.dataset.height))));
+
+    function render() {
+      const text = label(height);
+      readouts.forEach((element) => (element.textContent = text));
+      const offset = `translate(0 ${(max - height) * scale})`;
+      desk.setAttribute("transform", offset);
+      marker.setAttribute("transform", offset);
+      ticks.forEach((tick) =>
+        tick.toggleAttribute("data-active", Math.abs(Number(tick.dataset.tick) - height) < 0.05),
+      );
+    }
+
+    let frame = 0;
+    let movingCard: HTMLButtonElement | null = null;
+
+    function stop() {
+      cancelAnimationFrame(frame);
+      frame = 0;
+      if (movingCard) {
+        movingCard.classList.remove("is-moving");
+        movingCard.style.removeProperty("--progress");
+        movingCard = null;
+      }
+    }
+
+    function announce() {
+      status.textContent = `Desk at ${label(height)}`;
+    }
+
+    /** Glides to a saved height. The card fills up as the desk gets there. */
+    function moveTo(target: number, card: HTMLButtonElement, byVisitor: boolean) {
+      stop();
+      const from = height;
+      const distance = Math.abs(target - from);
+      if (distance < 0.05) return;
+
+      if (reducedMotion.matches) {
+        height = target;
+        render();
+        announce();
+        return;
+      }
+
+      const duration = 500 + distance * 30;
+      const started = performance.now();
+      movingCard = card;
+      card.classList.add("is-moving");
+
+      const step = (now: number) => {
+        const t = Math.min(1, (now - started) / duration);
+        const eased = t < 0.5 ? 2 * t * t : 1 - (-2 * t + 2) ** 2 / 2;
+        height = from + (target - from) * eased;
+        card.style.setProperty("--progress", `${eased * 100}%`);
+        render();
+        if (t < 1) {
+          frame = requestAnimationFrame(step);
+          return;
+        }
+        stop();
+        if (byVisitor) announce();
+        else rest();
+      };
+      frame = requestAnimationFrame(step);
+    }
+
+    /** Drives the desk while an arrow is held, like the app's own arrows. */
+    function drive(direction: number) {
+      stop();
+      if (reducedMotion.matches) {
+        height = Math.min(max, Math.max(min, height + direction));
+        render();
+        return;
+      }
+      let last = performance.now();
+      const step = (now: number) => {
+        const travelled = (direction * HOLD_SPEED * (now - last)) / 1000;
+        height = Math.min(max, Math.max(min, height + travelled));
+        last = now;
+        render();
+        frame = height > min && height < max ? requestAnimationFrame(step) : 0;
+      };
+      frame = requestAnimationFrame(step);
+    }
+
+    // Until someone touches it, the demo moves between Stand and Sit by itself.
+    let selfRunning = !reducedMotion.matches;
+    let onScreen = false;
+    let timer = 0;
+    let turn = 0;
+    const tour = ["stand", "sit"].map(
+      (id) => root.querySelector<HTMLButtonElement>(`[data-position="${id}"]`)!,
+    );
+
+    function rest(delay = REST) {
+      window.clearTimeout(timer);
+      if (!selfRunning || !onScreen || document.hidden) return;
+      timer = window.setTimeout(() => {
+        const card = tour[turn++ % tour.length];
+        moveTo(Number(card.dataset.target), card, false);
+      }, delay);
+    }
+
+    function takeOver() {
+      selfRunning = false;
+      window.clearTimeout(timer);
+    }
+
+    root.addEventListener("pointerdown", takeOver);
+    root.addEventListener("keydown", takeOver);
+
+    new IntersectionObserver(
+      ([entry]) => {
+        onScreen = entry.isIntersecting;
+        if (onScreen && !frame) rest(1400);
+        else window.clearTimeout(timer);
+      },
+      { threshold: 0.4 },
+    ).observe(root);
+    document.addEventListener("visibilitychange", () => {
+      if (!frame) rest(1400);
+    });
+
+    cards.forEach((card) =>
+      card.addEventListener("click", () => {
+        if (card === movingCard) {
+          stop();
+          announce();
+        } else {
+          moveTo(Number(card.dataset.target), card, true);
+        }
+      }),
+    );
+
+    holds.forEach((button) => {
+      const direction = Number(button.dataset.hold);
+      let held = false;
+      const press = () => {
+        if (held) return;
+        held = true;
+        drive(direction);
+      };
+      const release = () => {
+        if (!held) return;
+        held = false;
+        stop();
+        announce();
+      };
+
+      button.addEventListener("pointerdown", (event) => {
+        press();
+        // Keep receiving the pointer, so letting go outside the button still stops the desk.
+        button.setPointerCapture(event.pointerId);
+      });
+      button.addEventListener("pointerup", release);
+      button.addEventListener("pointercancel", release);
+      button.addEventListener("lostpointercapture", release);
+      button.addEventListener("contextmenu", (event) => event.preventDefault());
+      button.addEventListener("keydown", (event) => {
+        if (event.key === " " || event.key === "Enter") press();
+      });
+      button.addEventListener("keyup", release);
+      button.addEventListener("blur", release);
+    });
+
+    render();
+  }
+
+  document.querySelectorAll<HTMLElement>("[data-desk-demo]").forEach(setUpDeskDemo);
+</script>

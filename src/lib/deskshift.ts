@@ -14,9 +14,8 @@ export function appStoreUrl(campaign = "website"): string {
   return `${base}?pt=${PROVIDER_TOKEN}&ct=${encodeURIComponent(campaign)}&mt=12`;
 }
 
-// The minimum of the build that is live on the App Store. 1.3.0 lowers it to 15:
-// change this the day 1.3.0 is released, not before.
-export const MIN_MACOS = "26";
+// The minimum of the build that is live on the App Store (1.3.0, since 2026-10-13).
+export const MIN_MACOS = "15";
 
 // The price of Pro. The App Store converts it for every other country. Keep it
 // in step with the In-App Purchase's price schedule in App Store Connect.

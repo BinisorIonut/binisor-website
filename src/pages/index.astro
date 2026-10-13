@@ -1,5 +1,7 @@
 ---
+import { Image } from "astro:assets";
 import Base from "../layouts/Base.astro";
+import icon from "../assets/deskshift/icon.png";
 
 const LINKEDIN_URL = "https://www.linkedin.com/in/ionut-aurel-binisor-0418b4133/";
 const GITHUB_URL = "https://github.com/BinisorIonut";
@@ -10,14 +12,14 @@ const GITHUB_URL = "https://github.com/BinisorIonut";
   description="Senior iOS developer in Bucharest. Building DeskShift, a calm Mac-native standing-desk app."
 >
   <section class="space-y-6">
-    <h1 class="text-3xl font-semibold tracking-tight sm:text-4xl">
+    <h1 class="rise text-4xl font-semibold tracking-tight sm:text-5xl">
       Ionut Binisor
     </h1>
-    <p class="text-lg text-(--color-muted)">
+    <p class="rise text-lg text-(--color-muted)" style="--rise-delay: 60ms">
       iOS &amp; macOS developer. Bucharest, Romania.
     </p>
 
-    <div class="space-y-4 pt-2 text-base leading-relaxed">
+    <div class="rise space-y-4 pt-2 text-base leading-relaxed" style="--rise-delay: 120ms">
       <p>
         I've been writing Swift since 2017 — UIKit when I had to, SwiftUI ever
         since I could. By day I work on consumer iOS apps; on the side, I
@@ -31,7 +33,7 @@ const GITHUB_URL = "https://github.com/BinisorIonut";
       </p>
     </div>
 
-    <ul class="flex flex-wrap gap-x-6 gap-y-2 pt-4 text-sm">
+    <ul class="rise flex flex-wrap gap-x-6 gap-y-2 pt-4 text-sm" style="--rise-delay: 180ms">
       <li>
         <a href={LINKEDIN_URL} target="_blank" rel="noopener">LinkedIn ↗</a>
       </li>
@@ -44,17 +46,21 @@ const GITHUB_URL = "https://github.com/BinisorIonut";
     </ul>
   </section>
 
-  <section class="mt-16 border-t border-(--color-border)/60 pt-12">
+  <section
+    class="rise mt-16 border-t border-(--color-border)/60 pt-12"
+    style="--rise-delay: 240ms"
+  >
     <h2 class="mb-6 text-sm font-semibold tracking-wide text-(--color-muted) uppercase">
       Current project
     </h2>
 
     <a
       href="/deskshift"
-      class="block rounded-2xl border border-(--color-border) bg-(--color-surface) p-6 no-underline transition hover:border-(--color-fg)/40 hover:no-underline"
+      class="lift group block rounded-3xl border border-(--color-border)/70 bg-(--color-surface) p-6 no-underline hover:border-(--color-fg)/40 hover:no-underline"
     >
-      <div class="flex items-start justify-between gap-4">
-        <div>
+      <div class="flex items-start gap-5">
+        <Image src={icon} alt="" width={56} height={56} densities={[1, 2, 3]} loading="eager" class="h-14 w-14 flex-none" />
+        <div class="flex-1">
           <h3 class="text-xl font-semibold text-(--color-fg)">DeskShift</h3>
           <p class="mt-1 text-(--color-muted)">
             Your desk, in the menu bar. Move with a tap.
@@ -63,7 +69,10 @@ const GITHUB_URL = "https://github.com/BinisorIonut";
             macOS · IKEA IDÅSEN &amp; Linak desks · One-time purchase
           </p>
         </div>
-        <span class="text-(--color-muted)" aria-hidden="true">→</span>
+        <span
+          class="text-(--color-muted) transition duration-300 ease-(--ease-out) group-hover:translate-x-1 group-hover:text-(--color-fg)"
+          aria-hidden="true">→</span
+        >
       </div>
     </a>
   </section>

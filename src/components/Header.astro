@@ -1,27 +1,93 @@
 ---
+import { Image } from "astro:assets";
+import AppStoreBadge from "./AppStoreBadge.astro";
+import icon from "../assets/deskshift/icon.png";
+
+interface Props {
+  wide?: boolean;
+}
+
+const { wide = false } = Astro.props;
+
 const path = Astro.url.pathname;
 const isHome = path === "/";
+const inDeskShift = path.startsWith("/deskshift");
+const onLanding = path === "/deskshift" || path === "/deskshift/";
+
+// On the landing page the section links stay in the page and scroll smoothly.
+const section = (id: string) => (onLanding ? `#${id}` : `/deskshift/#${id}`);
+
+const links = [
+  { label: "Features", href: section("features") },
+  { label: "Pricing", href: section("pricing") },
+  { label: "FAQ", href: section("faq") },
+  { label: "Support", href: "/deskshift/support", current: path.startsWith("/deskshift/support") },
+];
+
+const linkClass =
+  "text-(--color-muted) no-underline transition-colors hover:text-(--color-fg) hover:no-underline aria-[current=page]:text-(--color-fg)";
 ---
 
-<header class="border-b border-(--color-border)/60">
-  <nav class="mx-auto flex max-w-3xl items-center justify-between px-6 py-4">
-    <a
-      href="/"
-      class="font-semibold tracking-tight text-(--color-fg) no-underline hover:no-underline"
-      aria-current={isHome ? "page" : undefined}
-    >
-      Home
-    </a>
-    <ul class="flex items-center gap-6 text-sm">
-      <li>
+<header
+  class="site-header sticky top-0 z-40 border-b border-transparent bg-(--color-bg)/75 backdrop-blur-xl backdrop-saturate-150 transition-colors duration-300"
+>
+  <nav
+    class:list={[
+      "mx-auto flex h-14 items-center justify-between gap-6 px-6",
+      wide ? "max-w-6xl" : "max-w-3xl",
+    ]}
+  >
+    {
+      inDeskShift ? (
         <a
           href="/deskshift"
-          class="text-(--color-muted) no-underline hover:text-(--color-fg) hover:no-underline"
-          aria-current={path.startsWith("/deskshift") ? "page" : undefined}
+          class="flex items-center gap-2.5 font-semibold tracking-tight text-(--color-fg) no-underline hover:no-underline"
+          aria-current={onLanding ? "page" : undefined}
         >
+          <Image src={icon} alt="" width={28} height={28} densities={[1, 2, 3]} loading="eager" class="h-7 w-7" />
           DeskShift
         </a>
-      </li>
-    </ul>
+      ) : (
+        <a
+          href="/"
+          class="font-semibold tracking-tight text-(--color-fg) no-underline hover:no-underline"
+          aria-current={isHome ? "page" : undefined}
+        >
+          Ionut Binisor
+        </a>
+      )
+    }
+
+    {
+      inDeskShift ? (
+        <div class="flex items-center gap-6 text-sm">
+          <ul class="hidden items-center gap-6 sm:flex">
+            {links.map((link) => (
+              <li>
+                <a href={link.href} class={linkClass} aria-current={link.current ? "page" : undefined}>
+                  {link.label}
+                </a>
+              </li>
+            ))}
+          </ul>
+          <AppStoreBadge size="sm" label="Download" />
+        </div>
+      ) : (
+        <ul class="flex items-center gap-6 text-sm">
+          <li>
+            <a href="/deskshift" class={linkClass}>
+              DeskShift
+            </a>
+          </li>
+        </ul>
+      )
+    }
   </nav>
 </header>
+
+<style>
+  /* The hairline appears once the page has scrolled under the header. */
+  :global([data-scrolled]) .site-header {
+    border-bottom-color: color-mix(in srgb, var(--color-border) 60%, transparent);
+  }
+</style>

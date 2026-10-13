@@ -1,6 +1,8 @@
 @import "tailwindcss";
 
-@theme {
+/* `static` keeps every token in the output, including the ones only component
+   styles read. The values here are the light theme. */
+@theme static {
   --font-sans: -apple-system, BlinkMacSystemFont, "SF Pro Text", "SF Pro Display", "Inter", system-ui, sans-serif;
   --color-bg: #fbfbfd;
   --color-fg: #1d1d1f;
@@ -8,44 +10,165 @@
   --color-border: #d2d2d7;
   --color-accent: #0071e3;
   --color-surface: #ffffff;
+  --color-surface-2: #f2f2f5;
+
+  --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
 }
 
-@media (prefers-color-scheme: dark) {
-  @theme {
-    --color-bg: #000000;
-    --color-fg: #f5f5f7;
-    --color-muted: #86868b;
-    --color-border: #2c2c2e;
-    --color-accent: #0a84ff;
-    --color-surface: #1c1c1e;
+@layer base {
+  /* The dark theme overrides the tokens on :root. A nested @theme does not work:
+     Tailwind merges it into the theme above and the site turns dark for everyone. */
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --color-bg: #000000;
+      --color-fg: #f5f5f7;
+      --color-muted: #86868b;
+      --color-border: #2c2c2e;
+      --color-accent: #0a84ff;
+      --color-surface: #1c1c1e;
+      --color-surface-2: #111113;
+    }
+  }
+
+  html {
+    background-color: var(--color-bg);
+    color: var(--color-fg);
+    color-scheme: light dark;
+    font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+    scroll-padding-top: 5rem;
+  }
+
+  body {
+    min-height: 100vh;
+  }
+
+  ::selection {
+    background-color: var(--color-accent);
+    color: white;
+  }
+
+  a {
+    color: var(--color-accent);
+    text-decoration: none;
+  }
+
+  a:hover {
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+
+  h1,
+  h2,
+  h3 {
+    text-wrap: balance;
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--color-accent);
+    outline-offset: 3px;
+    border-radius: 6px;
+  }
+
+  button {
+    cursor: pointer;
   }
 }
 
-html {
-  background-color: var(--color-bg);
-  color: var(--color-fg);
-  font-family: var(--font-sans);
-  -webkit-font-smoothing: antialiased;
-  text-rendering: optimizeLegibility;
+/* Motion. Everything below is switched off for visitors who ask for less. */
+@media (prefers-reduced-motion: no-preference) {
+  html {
+    scroll-behavior: smooth;
+  }
+
+  /* Cross-fade between pages, in browsers that support it. */
+  @view-transition {
+    navigation: auto;
+  }
+
+  /* Elements marked data-reveal fade up as they scroll into view. The `js`
+     class comes from an inline script in Base.astro, so nothing is hidden when
+     scripts do not run. */
+  .js [data-reveal] {
+    opacity: 0;
+    transform: translateY(1.25rem);
+    transition:
+      opacity 0.8s var(--ease-out),
+      transform 0.8s var(--ease-out);
+    transition-delay: var(--reveal-delay, 0ms);
+  }
+
+  .js [data-reveal].is-visible {
+    opacity: 1;
+    transform: none;
+  }
+
+  /* Above the fold: plays once on load, no script involved. */
+  .rise {
+    animation: rise 0.9s var(--ease-out) both;
+    animation-delay: var(--rise-delay, 0ms);
+  }
 }
 
-body {
-  min-height: 100vh;
+@keyframes rise {
+  from {
+    opacity: 0;
+    transform: translateY(1.25rem);
+  }
 }
 
-::selection {
-  background-color: var(--color-accent);
-  color: white;
+/* The header stays in place while the page under it cross-fades. */
+.site-header {
+  view-transition-name: site-header;
 }
 
-a {
-  color: var(--color-accent);
-  text-decoration: none;
+/* Cards that lift a little under the pointer. */
+.lift {
+  transition:
+    transform 0.3s var(--ease-out),
+    border-color 0.3s var(--ease-out),
+    box-shadow 0.3s var(--ease-out);
 }
 
-a:hover {
-  text-decoration: underline;
-  text-underline-offset: 3px;
+@media (hover: hover) and (prefers-reduced-motion: no-preference) {
+  .lift:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 18px 40px -24px color-mix(in srgb, var(--color-fg) 45%, transparent);
+  }
+}
+
+/* Open and close <details> smoothly where the browser can animate it. */
+details::details-content {
+  opacity: 0;
+  transition:
+    opacity 0.3s ease,
+    content-visibility 0.3s allow-discrete;
+}
+
+details[open]::details-content {
+  opacity: 1;
+}
+
+@supports (interpolate-size: allow-keywords) {
+  @media (prefers-reduced-motion: no-preference) {
+    details {
+      interpolate-size: allow-keywords;
+    }
+
+    details::details-content {
+      block-size: 0;
+      overflow: clip;
+      transition:
+        opacity 0.3s ease,
+        block-size 0.35s var(--ease-out),
+        content-visibility 0.35s allow-discrete;
+    }
+
+    details[open]::details-content {
+      block-size: auto;
+    }
+  }
 }
 
 /* Long-form legal/article pages (privacy, terms) */

@@ -1,45 +1,43 @@
 ---
+interface Props {
+  wide?: boolean;
+}
+
+const { wide = false } = Astro.props;
+
 const year = new Date().getFullYear();
+
+const links = [
+  { label: "Privacy", href: "/deskshift/privacy" },
+  { label: "Terms", href: "/deskshift/terms" },
+  { label: "Support", href: "/deskshift/support" },
+  { label: "Press", href: "/deskshift/press" },
+];
+
+const linkClass =
+  "text-(--color-muted) no-underline transition-colors hover:text-(--color-fg) hover:no-underline";
 ---
 
 <footer class="border-t border-(--color-border)/60">
   <div
-    class="mx-auto flex max-w-3xl flex-col gap-4 px-6 py-8 text-sm text-(--color-muted) sm:flex-row sm:items-center sm:justify-between"
+    class:list={[
+      "mx-auto flex flex-col gap-4 px-6 py-8 text-sm text-(--color-muted) sm:flex-row sm:items-center sm:justify-between",
+      wide ? "max-w-6xl" : "max-w-3xl",
+    ]}
   >
-    <p>© {year} Binisor Ionut Aurel</p>
+    <p>
+      © {year} <a href="/" class={linkClass}>Binisor Ionut Aurel</a>
+    </p>
     <ul class="flex flex-wrap gap-6">
-      <li>
-        <a
-          href="/deskshift/privacy"
-          class="text-(--color-muted) no-underline hover:text-(--color-fg) hover:no-underline"
-        >
-          Privacy
-        </a>
-      </li>
-      <li>
-        <a
-          href="/deskshift/terms"
-          class="text-(--color-muted) no-underline hover:text-(--color-fg) hover:no-underline"
-        >
-          Terms
-        </a>
-      </li>
-      <li>
-        <a
-          href="/deskshift/support"
-          class="text-(--color-muted) no-underline hover:text-(--color-fg) hover:no-underline"
-        >
-          Support
-        </a>
-      </li>
-      <li>
-        <a
-          href="/deskshift/press"
-          class="text-(--color-muted) no-underline hover:text-(--color-fg) hover:no-underline"
-        >
-          Press
-        </a>
-      </li>
+      {
+        links.map((link) => (
+          <li>
+            <a href={link.href} class={linkClass}>
+              {link.label}
+            </a>
+          </li>
+        ))
+      }
     </ul>
   </div>
 </footer>

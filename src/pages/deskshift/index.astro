@@ -2,6 +2,9 @@
 import { Image } from "astro:assets";
 import Base from "../../layouts/Base.astro";
 import AppStoreBadge from "../../components/AppStoreBadge.astro";
+import DeskDemo from "../../components/deskshift/DeskDemo.astro";
+import FeatureCarousel from "../../components/deskshift/FeatureCarousel.astro";
+import type { Slide } from "../../components/deskshift/FeatureCarousel.astro";
 import {
   appStoreUrl,
   DISCLAIMER,
@@ -10,52 +13,94 @@ import {
 } from "../../lib/deskshift";
 
 import icon from "../../assets/deskshift/icon.png";
-import popoverMoving from "../../assets/deskshift/popover-moving.png";
-import positionEditor from "../../assets/deskshift/position-editor.png";
-import postureCoach from "../../assets/deskshift/posture-coach.png";
-import keyboardShortcuts from "../../assets/deskshift/keyboard-shortcuts.png";
+// Window captures at 2x, with their shadow and a transparent background.
+import positions from "../../assets/deskshift/screens/positions.png";
+import postureCoach from "../../assets/deskshift/screens/posture-coach.png";
+import shortcuts from "../../assets/deskshift/screens/shortcuts.png";
+import gestures from "../../assets/deskshift/screens/gestures.png";
+import menuBar from "../../assets/deskshift/screens/menu-bar.png";
+import automation from "../../assets/deskshift/screens/automation.png";
+import multiDesk from "../../assets/deskshift/screens/multi-desk.png";
 
 const title = "DeskShift — Mac app for IKEA IDÅSEN standing desks";
 const description =
   "Control your IKEA IDÅSEN standing desk from the Mac menu bar: memory positions, keyboard shortcuts and a Posture Coach that can move the desk for you. Free to try, one-time purchase.";
 
-const features = [
+const features: Slide[] = [
   {
+    name: "Memory positions",
     title: "Every height you use, one tap away",
     body: "Save up to 12 positions of your own, name them, and jump to any of them from the menu bar. No holding a button, no guessing the height.",
-    image: positionEditor,
+    image: positions,
     alt: "DeskShift's position editor in the menu bar popover: a Stand position at 114 cm with its keyboard shortcut and Posture Coach schedule.",
+    maxWidth: 27,
   },
   {
+    name: "Posture Coach",
     title: "A standing desk that gets you standing",
     body: "Posture Coach reminds you to switch positions on your schedule. Turn on automatic movement and the desk raises or lowers itself.",
     image: postureCoach,
     alt: "Posture Coach settings: sitting and standing intervals, a schedule with active hours, and automatic desk movement switched on.",
   },
   {
+    name: "Keyboard shortcuts",
     title: "Never leave the keyboard",
-    body: "Global shortcuts for every position, plus up, down and stop. Desk actions in Spotlight and the Shortcuts app; name a shortcut and Siri runs it. Or double-tap the desk's own button.",
-    image: keyboardShortcuts,
+    body: "A global shortcut for every position, plus up, down and stop. Hold Move Up or Move Down to drive the desk; let go and it stops.",
+    image: shortcuts,
     alt: "Keyboard Shortcuts settings: a global shortcut for each memory position and for moving up, moving down and stopping.",
+  },
+  {
+    name: "Desk button gestures",
+    title: "The desk's own button, with shortcuts",
+    body: "Tap the physical button in a short sequence and the desk moves to a memory position. Give any position its own gesture of 2 to 5 up and down taps.",
+    image: gestures,
+    alt: "Interactions settings: desk button gestures, with two taps down for Sit, two taps up for Stand and three taps up for Max.",
+  },
+  {
+    name: "Menu bar",
+    title: "Your height, at a glance",
+    body: "Show an icon, the live desk height, or both in the menu bar, in centimetres or inches. You also choose what each position card shows.",
+    image: menuBar,
+    alt: "Menu Bar settings: a choice of icon, live height or both, precision and unit, and what each memory position card shows.",
+  },
+  {
+    name: "Shortcuts, Spotlight, Siri",
+    title: "A step in any automation",
+    body: "Six desk actions in the Shortcuts app, to combine with focus modes, timers or your morning routine. Type one into Spotlight, or name a shortcut and say it: “Hey Siri, stand up.”",
+    image: automation,
+    alt: "Automation settings: the six desk actions DeskShift adds to the Shortcuts app, a Spotlight example and the steps to run a shortcut with Siri.",
+  },
+  {
+    name: "More than one desk",
+    title: "Every desk you use",
+    body: "Pair each desk once and switch between them in a tap. DeskShift reconnects to the last one by itself, and iCloud keeps your desks and positions in step across your Macs.",
+    image: multiDesk,
+    alt: "The menu bar popover with its sidebar open: a saved desk, connected, and a button to scan for new desks.",
+    maxWidth: 40,
   },
 ];
 
+// `icon` is the inside of a 24 x 24 stroked SVG.
 const pillars = [
   {
     title: "Health first",
     body: "Calm reminders and a Posture Coach that helps you move more without nagging.",
+    icon: '<path d="M3 12h4l2.5-6 4 12 2.5-6h5"/>',
   },
   {
     title: "Comfort & ergonomics",
     body: "Tap, shortcut, or voice — no more holding a button on the side of your desk.",
+    icon: '<path d="M9 9h6v6H9zM9 9V6.5A2.5 2.5 0 1 0 6.5 9H9zM15 9h2.5A2.5 2.5 0 1 0 15 6.5V9zM15 15v2.5a2.5 2.5 0 1 0 2.5-2.5H15zM9 15H6.5A2.5 2.5 0 1 0 9 17.5V15z"/>',
   },
   {
     title: "Native Mac feel",
     body: "Menu bar, SF Symbols, iCloud sync. Built in SwiftUI, in 40 languages.",
+    icon: '<rect x="3" y="4.5" width="18" height="15" rx="3"/><path d="M3 9.5h18M13.5 7h4"/>',
   },
   {
     title: "Privacy by design",
     body: "No account, no analytics, no servers. Bluetooth talks only to your desk.",
+    icon: '<rect x="4.5" y="10.5" width="15" height="10" rx="2.5"/><path d="M8 10.5V8a4 4 0 0 1 8 0v2.5"/>',
   },
 ];
 
@@ -144,134 +189,215 @@ const faqLd = {
 };
 ---
 
-<Base title={title} description={description} ogImage="/deskshift/og.png">
+<Base title={title} description={description} ogImage="/deskshift/og.png" wide>
   <Fragment slot="head">
     <script type="application/ld+json" set:html={JSON.stringify(softwareLd)} />
     <script type="application/ld+json" set:html={JSON.stringify(faqLd)} />
   </Fragment>
 
   <!-- Hero -->
-  <section class="space-y-6">
-    <Image
-      src={icon}
-      alt="DeskShift app icon"
-      width={80}
-      height={80}
-      densities={[1, 2, 3]}
-      loading="eager"
-      class="h-20 w-20"
-    />
-    <p class="text-sm font-medium tracking-wide text-(--color-accent)">
-      DeskShift for macOS
-    </p>
-    <h1 class="text-4xl leading-tight font-semibold tracking-tight sm:text-5xl">
-      Your desk, in the menu bar.<br />
-      <span class="text-(--color-muted)">Move with a tap.</span>
-    </h1>
-    <p class="max-w-xl text-lg text-(--color-muted)">
-      Helps you adjust your posture at the right time. Stay in flow.
-    </p>
+  <section class="relative isolate grid items-center gap-14 lg:grid-cols-[minmax(0,5fr)_minmax(0,6fr)] lg:gap-12">
+    <div class="hero-glow" aria-hidden="true"></div>
 
-    <div class="flex flex-wrap items-center gap-4 pt-2">
-      <AppStoreBadge />
-      <a href="#features" class="text-sm">Learn more →</a>
+    <div class="space-y-6">
+      <Image
+        src={icon}
+        alt="DeskShift app icon"
+        width={80}
+        height={80}
+        densities={[1, 2, 3]}
+        loading="eager"
+        class="rise h-20 w-20 drop-shadow-xl"
+      />
+      <p
+        class="rise text-sm font-medium tracking-wide text-(--color-accent)"
+        style="--rise-delay: 60ms"
+      >
+        DeskShift for macOS
+      </p>
+      <h1
+        class="rise text-[2.5rem] leading-[1.05] font-semibold tracking-tight sm:text-6xl"
+        style="--rise-delay: 120ms"
+      >
+        Your desk, in the menu bar.<br />
+        <span class="text-(--color-muted)">Move with a tap.</span>
+      </h1>
+      <p class="rise max-w-xl text-lg text-(--color-muted)" style="--rise-delay: 180ms">
+        Save the heights you use, switch with a tap or a shortcut, and let
+        Posture Coach raise the desk when you've sat long enough.
+      </p>
+
+      <div class="rise flex flex-wrap items-center gap-x-6 gap-y-4 pt-2" style="--rise-delay: 240ms">
+        <AppStoreBadge />
+        <a href="#features" class="text-sm font-medium">See what it does ↓</a>
+      </div>
+
+      <p class="rise pt-1 text-xs text-(--color-muted)" style="--rise-delay: 300ms">
+        For IKEA IDÅSEN &amp; other Linak-based Bluetooth desks. macOS {MIN_MACOS} or
+        later. Free to download, 14-day Pro trial.
+      </p>
     </div>
 
-    <p class="pt-1 text-xs text-(--color-muted)">
-      For IKEA IDÅSEN &amp; other Linak-based Bluetooth desks. macOS {MIN_MACOS} or
-      later. Free to download, 14-day Pro trial.
-    </p>
-
-    <Image
-      src={popoverMoving}
-      alt="DeskShift in the Mac menu bar, moving a desk to the Stand position, with the live height shown next to the menu bar icon."
-      widths={[640, 960, 1280]}
-      sizes="(min-width: 48rem) 45rem, 100vw"
-      loading="eager"
-      class="mt-6 w-full rounded-2xl border border-(--color-border)"
-    />
+    <div class="rise" style="--rise-delay: 260ms">
+      <DeskDemo />
+      <p class="mt-4 text-center text-sm text-(--color-muted)">
+        Go on, try it: tap a position, or hold an arrow.
+      </p>
+    </div>
   </section>
 
   <!-- What it does -->
-  <section class="mt-20 space-y-16">
-    {
-      features.map((f) => (
-        <div>
-          <h2 class="text-2xl font-semibold tracking-tight">{f.title}</h2>
-          <p class="mt-2 max-w-xl text-lg text-(--color-muted)">{f.body}</p>
-          <Image
-            src={f.image}
-            alt={f.alt}
-            widths={[640, 960, 1280]}
-            sizes="(min-width: 48rem) 45rem, 100vw"
-            class="mt-6 w-full rounded-2xl border border-(--color-border)"
-          />
-        </div>
-      ))
-    }
-    <p class="text-sm text-(--color-muted)">
+  <section id="features" class="mt-28 sm:mt-40">
+    <div class="max-w-2xl" data-reveal>
+      <h2 class="text-4xl font-semibold tracking-tight sm:text-5xl">A closer look.</h2>
+      <p class="mt-4 text-lg text-(--color-muted)">
+        Pick a feature, or sit back and let it play.
+      </p>
+    </div>
+    <div class="mt-10 sm:mt-14" data-reveal>
+      <FeatureCarousel slides={features} />
+    </div>
+    <p class="mt-10 text-sm text-(--color-muted)" data-reveal>
       All of this is yours for the 14-day trial. Sit, Stand and manual control
       stay free after it.
     </p>
   </section>
 
   <!-- Pillars -->
-  <section class="mt-20 grid gap-8 sm:grid-cols-2">
-    {
-      pillars.map((p) => (
-        <div>
-          <h3 class="text-base font-semibold tracking-tight">{p.title}</h3>
-          <p class="mt-2 text-(--color-muted)">{p.body}</p>
-        </div>
-      ))
-    }
+  <section class="mt-28 sm:mt-40">
+    <h2 class="text-4xl font-semibold tracking-tight sm:text-5xl" data-reveal>
+      The thinking behind it.
+    </h2>
+    <div class="mt-10 grid gap-4 sm:mt-14 sm:grid-cols-2 lg:grid-cols-4">
+      {
+        pillars.map((p, i) => (
+          <div
+            class="lift rounded-3xl border border-(--color-border)/70 bg-(--color-surface) p-6"
+            data-reveal
+            style={`--reveal-delay: ${i * 80}ms`}
+          >
+            <span class="grid h-11 w-11 place-items-center rounded-2xl bg-(--color-accent)/12 text-(--color-accent)">
+              <svg
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="1.8"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                class="h-6 w-6"
+                aria-hidden="true"
+                set:html={p.icon}
+              />
+            </span>
+            <h3 class="mt-5 text-lg font-semibold tracking-tight">{p.title}</h3>
+            <p class="mt-2 text-(--color-muted)">{p.body}</p>
+          </div>
+        ))
+      }
+    </div>
   </section>
 
   <!-- Free vs Pro -->
-  <section id="features" class="mt-20">
-    <p class="text-2xl font-semibold tracking-tight sm:text-3xl">
-      One price. One time. Yours forever.
-    </p>
-    <p class="mt-3 text-lg text-(--color-muted)">
-      Every new install starts with a 14-day full-Pro trial — no card, no
-      account.
-    </p>
-
-    <div class="mt-6 overflow-x-auto rounded-2xl border border-(--color-border)">
-      <table class="w-full text-sm">
-        <thead class="bg-(--color-bg) text-left">
-          <tr>
-            <th class="px-4 py-3 font-medium">Feature</th>
-            <th class="px-4 py-3 text-center font-medium">Free</th>
-            <th class="px-4 py-3 text-center font-medium">Pro</th>
-          </tr>
-        </thead>
-        <tbody>
-          {
-            matrix.map((row) => (
-              <tr class="border-t border-(--color-border)/60 align-top">
-                <td class="px-4 py-3">
-                  <div class="font-medium">{row.feature}</div>
-                  <div class="mt-0.5 text-xs text-(--color-muted)">{row.desc}</div>
-                </td>
-                <td class="px-4 py-3 text-center">
-                  {row.free ? (
-                    <span aria-label="Included">✓</span>
-                  ) : (
-                    <span class="text-(--color-muted)" aria-label="Not included">✕</span>
-                  )}
-                </td>
-                <td class="px-4 py-3 text-center">
-                  <span aria-label="Included">✓</span>
-                </td>
-              </tr>
-            ))
-          }
-        </tbody>
-      </table>
+  <section id="pricing" class="mt-28 sm:mt-40">
+    <div class="max-w-2xl" data-reveal>
+      <h2 class="text-4xl font-semibold tracking-tight sm:text-5xl">
+        One price. One time. Yours forever.
+      </h2>
+      <p class="mt-4 text-lg text-(--color-muted)">
+        Every new install starts with a 14-day full-Pro trial — no card, no
+        account.
+      </p>
     </div>
 
-    <p class="mt-6 text-base">
+    <div class="mt-10 grid gap-4 sm:mt-14 lg:grid-cols-2">
+      <div class="rounded-3xl border border-(--color-border)/70 bg-(--color-surface) p-8" data-reveal>
+        <h3 class="text-3xl font-semibold tracking-tight">Free</h3>
+        <p class="mt-2 text-(--color-muted)">
+          The basics, for as long as you like.
+        </p>
+        <ul class="mt-8 space-y-3.5">
+          {
+            matrix.filter((row) => row.free).map((row) => (
+              <li class="flex gap-3">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" class="mt-0.5 h-5 w-5 flex-none text-(--color-muted)" aria-hidden="true">
+                  <path d="m5 12.5 4.5 4.5L19 7.5" />
+                </svg>
+                {row.feature}
+              </li>
+            ))
+          }
+        </ul>
+      </div>
+
+      <div class="pro-card relative rounded-3xl border border-(--color-accent)/50 bg-(--color-surface) p-8" data-reveal style="--reveal-delay: 100ms">
+        <div class="flex flex-wrap items-center justify-between gap-3">
+          <h3 class="text-3xl font-semibold tracking-tight">Pro</h3>
+          <span class="rounded-full bg-(--color-accent)/12 px-3 py-1 text-xs font-semibold text-(--color-accent)">
+            One-time purchase
+          </span>
+        </div>
+        <p class="mt-2 text-(--color-muted)">
+          {PRO_PRICE}. No subscription.
+        </p>
+        <p class="mt-8 text-sm font-medium text-(--color-muted)">
+          Everything in Free, and:
+        </p>
+        <ul class="mt-4 grid gap-x-6 gap-y-3.5 sm:grid-cols-2">
+          {
+            matrix.filter((row) => !row.free).map((row) => (
+              <li class="flex gap-3">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" class="mt-0.5 h-5 w-5 flex-none text-(--color-accent)" aria-hidden="true">
+                  <path d="m5 12.5 4.5 4.5L19 7.5" />
+                </svg>
+                {row.feature}
+              </li>
+            ))
+          }
+        </ul>
+      </div>
+    </div>
+
+    <details class="group mt-4 rounded-3xl border border-(--color-border)/70 bg-(--color-surface) [&_summary::-webkit-details-marker]:hidden" data-reveal>
+      <summary class="flex cursor-pointer list-none items-center justify-between gap-4 px-8 py-5 font-medium">
+        Compare every feature
+        <span class="text-xl text-(--color-muted) transition duration-300 group-open:rotate-45" aria-hidden="true">+</span>
+      </summary>
+      <div class="overflow-x-auto border-t border-(--color-border)/60">
+        <table class="w-full text-sm">
+          <thead class="text-left">
+            <tr>
+              <th class="px-8 py-3 font-medium">Feature</th>
+              <th class="px-4 py-3 text-center font-medium">Free</th>
+              <th class="px-4 py-3 pr-8 text-center font-medium">Pro</th>
+            </tr>
+          </thead>
+          <tbody>
+            {
+              matrix.map((row) => (
+                <tr class="border-t border-(--color-border)/60 align-top">
+                  <td class="px-8 py-3">
+                    <div class="font-medium">{row.feature}</div>
+                    <div class="mt-0.5 text-xs text-(--color-muted)">{row.desc}</div>
+                  </td>
+                  <td class="px-4 py-3 text-center">
+                    {row.free ? (
+                      <span aria-label="Included">✓</span>
+                    ) : (
+                      <span class="text-(--color-muted)" aria-label="Not included">✕</span>
+                    )}
+                  </td>
+                  <td class="px-4 py-3 pr-8 text-center">
+                    <span aria-label="Included">✓</span>
+                  </td>
+                </tr>
+              ))
+            }
+          </tbody>
+        </table>
+      </div>
+    </details>
+
+    <p class="mt-8 max-w-3xl text-base" data-reveal>
       <span class="font-semibold">Pro is a one-time purchase: {PRO_PRICE}.</span>
       The App Store shows the price in your currency. No subscription, no
       upsells. Every Pro feature today, and every Pro feature added later, stays
@@ -280,41 +406,80 @@ const faqLd = {
   </section>
 
   <!-- FAQ -->
-  <section class="mt-20">
-    <h2 class="text-2xl font-semibold tracking-tight">Questions</h2>
-    <div class="mt-6 space-y-4">
+  <section id="faq" class="mt-28 grid gap-10 sm:mt-40 lg:grid-cols-[minmax(0,1fr)_minmax(0,2fr)] lg:gap-16">
+    <div data-reveal>
+      <h2 class="text-4xl font-semibold tracking-tight sm:text-5xl">Questions</h2>
+      <p class="mt-4 text-(--color-muted)">
+        Something else? <a href="/deskshift/support">Ask me directly.</a>
+      </p>
+    </div>
+    <div class="space-y-3" data-reveal>
       {
         faqs.map((item) => (
-          <details class="group rounded-xl border border-(--color-border) bg-(--color-surface) px-5 py-4 [&_summary::-webkit-details-marker]:hidden">
+          <details class="group rounded-2xl border border-(--color-border)/70 bg-(--color-surface) px-6 py-5 transition-colors duration-300 hover:border-(--color-fg)/30 [&_summary::-webkit-details-marker]:hidden">
             <summary class="flex cursor-pointer list-none items-start justify-between gap-4">
               <span class="font-medium">{item.q}</span>
               <span
-                class="mt-1 text-(--color-muted) transition group-open:rotate-45"
+                class="text-xl leading-6 text-(--color-muted) transition duration-300 group-open:rotate-45"
                 aria-hidden="true"
               >
                 +
               </span>
             </summary>
-            <p class="mt-3 text-(--color-muted)">{item.a}</p>
+            <p class="pt-3 text-(--color-muted)">{item.a}</p>
           </details>
         ))
       }
     </div>
-    <p class="mt-6 text-sm text-(--color-muted)">
-      Something else? <a href="/deskshift/support">Ask me directly.</a>
-    </p>
   </section>
 
   <!-- CTA -->
-  <section class="mt-20 rounded-2xl border border-(--color-border) bg-(--color-surface) p-8 text-center">
-    <h2 class="text-2xl font-semibold tracking-tight">Try DeskShift</h2>
-    <p class="mx-auto mt-2 max-w-md text-(--color-muted)">
+  <section
+    class="cta relative isolate mt-28 overflow-clip rounded-[2rem] border border-(--color-border)/70 bg-(--color-surface) px-6 py-16 text-center sm:mt-40 sm:py-24"
+    data-reveal
+  >
+    <Image
+      src={icon}
+      alt=""
+      width={72}
+      height={72}
+      densities={[1, 2, 3]}
+      class="mx-auto h-18 w-18 drop-shadow-xl"
+    />
+    <h2 class="mt-6 text-4xl font-semibold tracking-tight sm:text-5xl">Try DeskShift</h2>
+    <p class="mx-auto mt-4 max-w-md text-lg text-(--color-muted)">
       Full Pro free for 14 days. No card. No account. No email.
     </p>
-    <div class="mt-6 flex justify-center">
+    <div class="mt-8 flex justify-center">
       <AppStoreBadge />
     </div>
   </section>
 
   <p class="mt-10 text-xs text-(--color-muted)">{DISCLAIMER}</p>
 </Base>
+
+<style>
+  /* A soft wash of the accent colour behind the hero and the closing panel. */
+  .hero-glow {
+    position: absolute;
+    z-index: -1;
+    inset: -10rem 0 auto 20%;
+    height: 38rem;
+    background: radial-gradient(closest-side, color-mix(in srgb, var(--color-accent) 20%, transparent), transparent);
+    pointer-events: none;
+  }
+
+  .cta::before {
+    content: "";
+    position: absolute;
+    z-index: -1;
+    inset: -60% 10% auto;
+    aspect-ratio: 1;
+    border-radius: 50%;
+    background: radial-gradient(closest-side, color-mix(in srgb, var(--color-accent) 26%, transparent), transparent);
+  }
+
+  .pro-card {
+    box-shadow: 0 30px 70px -45px var(--color-accent);
+  }
+</style>

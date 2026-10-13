@@ -1,0 +1,536 @@
+---
+import { Image } from "astro:assets";
+
+export interface Slide {
+  /** Short name, shown in the feature picker. */
+  name: string;
+  title: string;
+  body: string;
+  image: ImageMetadata;
+  alt: string;
+  /** Widest the screenshot is shown, in rem. Popovers stay near life size. */
+  maxWidth?: number;
+}
+
+interface Props {
+  slides: Slide[];
+  /** Seconds each slide stays up while the carousel plays by itself. */
+  seconds?: number;
+}
+
+const { slides, seconds = 7 } = Astro.props;
+---
+
+<div
+  class="fc"
+  data-carousel
+  data-offscreen
+  aria-roledescription="carousel"
+  aria-label="DeskShift features"
+  style={`--fc-seconds: ${seconds}s`}
+>
+  <ul class="fc-tabs" data-tabs>
+    {
+      slides.map((slide, i) => (
+        <li class="fc-tab" data-tab data-active={i === 0 ? "" : undefined}>
+          <button type="button" aria-current={i === 0 ? "true" : undefined}>
+            {slide.name}
+          </button>
+          <div class="fc-more">
+            <div>
+              <p class="fc-more-title">{slide.title}</p>
+              <p>{slide.body}</p>
+            </div>
+          </div>
+          <span class="fc-progress" aria-hidden="true">
+            <span data-progress />
+          </span>
+        </li>
+      ))
+    }
+  </ul>
+
+  <div class="fc-stage">
+    <div class="fc-track" data-track>
+      {
+        slides.map((slide, i) => (
+          <figure
+            class="fc-slide"
+            role="group"
+            aria-roledescription="slide"
+            aria-label={`${i + 1} of ${slides.length}: ${slide.name}`}
+          >
+            <div class="fc-shot" style={slide.maxWidth ? `--shot-max: ${slide.maxWidth}rem` : undefined}>
+              <Image
+                src={slide.image}
+                alt={slide.alt}
+                widths={[640, 960, 1280, 1920]}
+                sizes="(min-width: 64rem) 42rem, 92vw"
+                loading="lazy"
+              />
+            </div>
+            <figcaption class="fc-caption">
+              <h3>{slide.title}</h3>
+              <p>{slide.body}</p>
+            </figcaption>
+          </figure>
+        ))
+      }
+    </div>
+
+    <div class="fc-controls">
+      <span class="fc-counter" data-counter aria-hidden="true">
+        1 / {slides.length}
+      </span>
+      <button type="button" data-step="-1" aria-label="Previous feature">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M14.5 6 8.5 12l6 6"></path>
+        </svg>
+      </button>
+      <button type="button" data-toggle aria-label="Pause the slideshow">
+        <svg class="when-playing" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+          <rect x="7" y="6" width="3.4" height="12" rx="1.2"></rect>
+          <rect x="13.6" y="6" width="3.4" height="12" rx="1.2"></rect>
+        </svg>
+        <svg class="when-paused" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+          <path d="M9 6.3v11.4a1 1 0 0 0 1.5.86l9.3-5.7a1 1 0 0 0 0-1.72l-9.3-5.7A1 1 0 0 0 9 6.3z"></path>
+        </svg>
+      </button>
+      <button type="button" data-step="1" aria-label="Next feature">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="m9.5 6 6 6-6 6"></path>
+        </svg>
+      </button>
+    </div>
+  </div>
+</div>
+
+<style>
+  .fc {
+    display: grid;
+    gap: 1.25rem;
+  }
+
+  /* The picker. A row of chips on small screens, a list beside the stage on
+     large ones, where the current feature opens to show its description. */
+  .fc-tabs {
+    display: flex;
+    gap: 0.5rem;
+    margin-inline: -1.5rem;
+    padding: 0.25rem 1.5rem;
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+  .fc-tabs::-webkit-scrollbar {
+    display: none;
+  }
+
+  .fc-tab {
+    position: relative;
+    flex: none;
+    overflow: hidden;
+    border: 1px solid var(--color-border);
+    border-radius: 999px;
+    transition: border-color 0.3s ease;
+  }
+  .fc-tab[data-active] {
+    border-color: var(--color-fg);
+  }
+
+  .fc-tab button {
+    position: relative;
+    z-index: 1;
+    padding: 0.5rem 0.95rem;
+    color: var(--color-muted);
+    font-size: 0.875rem;
+    font-weight: 600;
+    white-space: nowrap;
+    transition: color 0.3s ease;
+  }
+  .fc-tab button:hover,
+  .fc-tab[data-active] button {
+    color: var(--color-fg);
+  }
+
+  .fc-more {
+    display: none;
+  }
+
+  /* Fills while the slide is up; the next slide follows when it is full. */
+  .fc-progress {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+  }
+  .fc-progress span {
+    display: block;
+    height: 100%;
+    background: color-mix(in srgb, var(--color-accent) 16%, transparent);
+    transform: scaleX(0);
+    transform-origin: left;
+  }
+  /* Longhands on purpose: the `animation` shorthand would reset the play state
+     and undo the pauses below. */
+  .fc[data-autoplay="on"] [data-active] .fc-progress span {
+    animation-name: fc-fill;
+    animation-duration: var(--fc-seconds);
+    animation-timing-function: linear;
+    animation-fill-mode: forwards;
+  }
+  .fc[data-autoplay="off"] [data-active] .fc-progress span {
+    transform: none;
+  }
+  .fc:is([data-offscreen], :has(:focus-visible)) .fc-progress span {
+    animation-play-state: paused;
+  }
+  @media (hover: hover) {
+    .fc:hover .fc-progress span {
+      animation-play-state: paused;
+    }
+  }
+
+  @keyframes fc-fill {
+    to {
+      transform: none;
+    }
+  }
+
+  /* The stage: one screenshot per slide, swiped or scrolled sideways. */
+  .fc-stage {
+    min-width: 0;
+  }
+
+  .fc-track {
+    position: relative;
+    display: flex;
+    gap: 1rem;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    scrollbar-width: none;
+    overscroll-behavior-x: contain;
+    transition: opacity 0.2s ease;
+  }
+  .fc-track::-webkit-scrollbar {
+    display: none;
+  }
+  .fc-track.is-fading {
+    opacity: 0;
+  }
+
+  .fc-slide {
+    flex: 0 0 100%;
+    min-width: 0;
+    scroll-snap-align: start;
+    scroll-snap-stop: always;
+  }
+
+  .fc-shot {
+    --pad: 0.5rem;
+    position: relative;
+    aspect-ratio: 8 / 7;
+    border: 1px solid color-mix(in srgb, var(--color-border) 70%, transparent);
+    border-radius: 1.5rem;
+    background:
+      radial-gradient(110% 80% at 50% 0%, color-mix(in srgb, var(--color-accent) 22%, transparent), transparent 65%),
+      var(--color-surface-2);
+  }
+  /* The <img> comes from Astro's Image component, outside this scope. */
+  .fc-shot :global(img) {
+    position: absolute;
+    inset: var(--pad);
+    width: calc(100% - 2 * var(--pad));
+    max-width: var(--shot-max, none);
+    height: calc(100% - 2 * var(--pad));
+    margin: auto;
+    object-fit: contain;
+  }
+
+  .fc-caption {
+    padding: 1.1rem 0.25rem 0;
+  }
+  .fc-caption h3 {
+    font-size: 1.2rem;
+    font-weight: 600;
+    letter-spacing: -0.015em;
+  }
+  .fc-caption p {
+    margin-top: 0.4rem;
+    color: var(--color-muted);
+  }
+
+  .fc-controls {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 0.5rem;
+    margin-top: 1rem;
+  }
+  .fc-counter {
+    margin-right: auto;
+    padding-left: 0.25rem;
+    color: var(--color-muted);
+    font-size: 0.8rem;
+    font-variant-numeric: tabular-nums;
+  }
+  .fc-controls button {
+    display: grid;
+    place-items: center;
+    width: 2.4rem;
+    height: 2.4rem;
+    border-radius: 50%;
+    background: color-mix(in srgb, var(--color-fg) 8%, transparent);
+    color: var(--color-fg);
+    transition:
+      background-color 0.2s ease,
+      transform 0.2s var(--ease-out);
+  }
+  .fc-controls button:hover {
+    background: color-mix(in srgb, var(--color-fg) 16%, transparent);
+  }
+  .fc-controls button:active {
+    transform: scale(0.92);
+  }
+  .fc-controls svg {
+    width: 1.1rem;
+    height: 1.1rem;
+  }
+  .fc:not([data-autoplay="on"]) .when-playing,
+  .fc[data-autoplay="on"] .when-paused {
+    display: none;
+  }
+
+  @media (min-width: 64rem) {
+    .fc {
+      grid-template-columns: 21rem minmax(0, 1fr);
+      align-items: start;
+      gap: 3.5rem;
+    }
+
+    .fc-tabs {
+      display: block;
+      margin: 0;
+      padding: 0;
+      overflow: visible;
+    }
+
+    .fc-tab {
+      padding: 1rem 0;
+      border: 0;
+      border-bottom: 1px solid color-mix(in srgb, var(--color-border) 70%, transparent);
+      border-radius: 0;
+    }
+
+    .fc-tab button {
+      position: static;
+      padding: 0;
+      font-size: 1.0625rem;
+      letter-spacing: -0.01em;
+    }
+    /* The whole row is the button's hit area. */
+    .fc-tab button::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      z-index: 1;
+    }
+
+    .fc-more {
+      display: grid;
+      grid-template-rows: 0fr;
+      opacity: 0;
+      transition:
+        grid-template-rows 0.5s var(--ease-out),
+        opacity 0.4s ease;
+    }
+    .fc-tab[data-active] .fc-more {
+      grid-template-rows: 1fr;
+      opacity: 1;
+    }
+    .fc-more > div {
+      min-height: 0;
+      overflow: hidden;
+    }
+    .fc-more p {
+      padding-top: 0.35rem;
+      color: var(--color-muted);
+      font-size: 0.95rem;
+      line-height: 1.55;
+    }
+    .fc-more .fc-more-title {
+      padding-top: 0.5rem;
+      color: var(--color-fg);
+      font-weight: 500;
+    }
+
+    .fc-progress {
+      inset: auto 0 -1px;
+      height: 2px;
+    }
+    .fc-progress span {
+      background: var(--color-accent);
+    }
+
+    .fc-shot {
+      --pad: 1.25rem;
+      border-radius: 1.75rem;
+    }
+
+    .fc-caption {
+      display: none;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .fc-more,
+    .fc-track {
+      transition: none;
+    }
+  }
+</style>
+
+<script>
+  const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
+
+  function setUpCarousel(root: HTMLElement) {
+    const track = root.querySelector<HTMLElement>("[data-track]")!;
+    const slides = Array.from(track.children) as HTMLElement[];
+    const tabList = root.querySelector<HTMLElement>("[data-tabs]")!;
+    const tabs = Array.from(root.querySelectorAll<HTMLElement>("[data-tab]"));
+    const buttons = tabs.map((tab) => tab.querySelector("button")!);
+    const counter = root.querySelector<HTMLElement>("[data-counter]")!;
+    const toggle = root.querySelector<HTMLButtonElement>("[data-toggle]")!;
+
+    let index = 0;
+    // True while the carousel scrolls the track itself, so that scrolling is
+    // not mistaken for a swipe.
+    let scripted = false;
+    let scriptedTimer = 0;
+
+    const smooth = () => (reducedMotion.matches ? "instant" : "smooth");
+
+    function setAutoplay(on: boolean) {
+      root.dataset.autoplay = on ? "on" : "off";
+      toggle.setAttribute("aria-label", on ? "Pause the slideshow" : "Play the slideshow");
+    }
+    const autoplaying = () => root.dataset.autoplay === "on";
+
+    function markCurrent() {
+      tabs.forEach((tab, i) => {
+        tab.toggleAttribute("data-active", i === index);
+        if (i === index) buttons[i].setAttribute("aria-current", "true");
+        else buttons[i].removeAttribute("aria-current");
+      });
+      counter.textContent = `${index + 1} / ${slides.length}`;
+
+      // Keep the current chip in view where the picker scrolls sideways.
+      if (tabList.scrollWidth > tabList.clientWidth) {
+        const tab = tabs[index];
+        tabList.scrollTo({
+          left: tab.offsetLeft - (tabList.clientWidth - tab.offsetWidth) / 2,
+          behavior: smooth(),
+        });
+      }
+    }
+
+    function scrollTrack(behavior: ScrollBehavior) {
+      scripted = true;
+      window.clearTimeout(scriptedTimer);
+      track.scrollTo({ left: slides[index].offsetLeft, behavior });
+      scriptedTimer = window.setTimeout(() => (scripted = false), behavior === "smooth" ? 900 : 80);
+    }
+
+    function show(next: number) {
+      const wraps = next < 0 || next >= slides.length;
+      index = (next + slides.length) % slides.length;
+      markCurrent();
+
+      // Going from the last slide back to the first, fade instead of rewinding
+      // through every slide in between.
+      if (wraps && !reducedMotion.matches) {
+        scripted = true;
+        track.classList.add("is-fading");
+        window.setTimeout(() => {
+          scrollTrack("instant");
+          track.classList.remove("is-fading");
+        }, 200);
+        return;
+      }
+      scrollTrack(smooth());
+    }
+
+    // A swipe or a sideways scroll: follow it, and stop playing.
+    track.addEventListener(
+      "scroll",
+      () => {
+        if (scripted) return;
+        const nearest = slides.reduce(
+          (best, slide, i) =>
+            Math.abs(slide.offsetLeft - track.scrollLeft) <
+            Math.abs(slides[best].offsetLeft - track.scrollLeft)
+              ? i
+              : best,
+          0,
+        );
+        if (nearest === index) return;
+        index = nearest;
+        setAutoplay(false);
+        markCurrent();
+      },
+      { passive: true },
+    );
+
+    new ResizeObserver(() => scrollTrack("instant")).observe(track);
+
+    buttons.forEach((button, i) => {
+      button.addEventListener("click", () => {
+        setAutoplay(false);
+        show(i);
+      });
+      button.addEventListener("keydown", (event) => {
+        const steps: Record<string, number> = { ArrowRight: 1, ArrowDown: 1, ArrowLeft: -1, ArrowUp: -1 };
+        const step = steps[event.key];
+        if (!step) return;
+        event.preventDefault();
+        setAutoplay(false);
+        show(index + step);
+        buttons[index].focus();
+      });
+    });
+
+    root.querySelectorAll<HTMLButtonElement>("[data-step]").forEach((button) =>
+      button.addEventListener("click", () => {
+        setAutoplay(false);
+        show(index + Number(button.dataset.step));
+      }),
+    );
+
+    toggle.addEventListener("click", () => setAutoplay(!autoplaying()));
+
+    // The progress bar is the timer: when it has filled, move on.
+    root.addEventListener("animationend", (event) => {
+      if (!(event.target as Element).matches("[data-progress]")) return;
+      if (autoplaying()) show(index + 1);
+    });
+
+    // Play only while the carousel is on screen, and fetch the screenshots just
+    // before it gets there so no slide arrives empty.
+    new IntersectionObserver(
+      ([entry]) => root.toggleAttribute("data-offscreen", !entry.isIntersecting),
+      { threshold: 0.35 },
+    ).observe(root);
+
+    const nearby = new IntersectionObserver(
+      ([entry]) => {
+        if (!entry.isIntersecting) return;
+        root.querySelectorAll("img").forEach((image) => (image.loading = "eager"));
+        nearby.disconnect();
+      },
+      { rootMargin: "600px 0px" },
+    );
+    nearby.observe(root);
+
+    setAutoplay(!reducedMotion.matches);
+  }
+
+  document.querySelectorAll<HTMLElement>("[data-carousel]").forEach(setUpCarousel);
+</script>
