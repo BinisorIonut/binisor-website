@@ -10,6 +10,7 @@ import {
   SUPPORT_EMAIL,
   VERSION,
   VERSION_DATE,
+  WIDGET_MIN_MACOS,
 } from "../../lib/deskshift";
 
 // The App Store's own screenshots of the current version, 2880 × 1800.
@@ -21,13 +22,14 @@ import postureCoach from "../../assets/deskshift/posture-coach.png";
 import pauseWhile from "../../assets/deskshift/pause-while.png";
 import deskButtonGestures from "../../assets/deskshift/desk-button-gestures.png";
 import keyboardShortcuts from "../../assets/deskshift/keyboard-shortcuts.png";
+import desktopWidget from "../../assets/deskshift/desktop-widget.png";
 
 const storeUrl = appStoreUrl("press");
 
 const facts: Array<{ label: string; value: string; href?: string }> = [
   { label: "App", value: "DeskShift" },
   { label: "Made by", value: "Ionut Binisor, independent developer, Bucharest, Romania" },
-  { label: "Platform", value: `macOS ${MIN_MACOS} or later, Mac App Store only` },
+  { label: "Platform", value: `macOS ${MIN_MACOS} or later (the desktop widget: macOS ${WIDGET_MIN_MACOS}), Mac App Store only` },
   { label: "Current version", value: `${VERSION}, released ${VERSION_DATE}` },
   { label: "First released", value: "July 5, 2026" },
   { label: "Price", value: `Free to download. Pro is a one-time purchase: ${PRO_PRICE}. Every install starts with a 14-day full Pro trial.` },
@@ -40,6 +42,7 @@ const facts: Array<{ label: string; value: string; href?: string }> = [
 
 const highlights = [
   "Move the desk from the menu bar, with the live height next to the icon.",
+  `A desktop widget in two sizes: the desk's height, how long you've been sitting or standing, and one click to move it (macOS ${WIDGET_MIN_MACOS}).`,
   "Up to 12 named memory positions, each with its own icon, as a grid or a list in the order you choose.",
   "Posture Coach: reminders to switch positions, or the desk moves itself on a schedule, after a 10-second countdown you can skip or snooze.",
   "The coach waits while you're on a call or the Mac is locked.",
@@ -51,14 +54,9 @@ const highlights = [
 
 // What the current version brought. From the app's own release notes.
 const news = [
-  "A 10-second countdown before every automatic move. Skip or snooze it from the menu bar, the notification or the desk's own button.",
-  "Posture Coach waits while you're on a call or the Mac is locked, and can leave time away from the Mac out of the intervals.",
-  "The menu bar popover shows how long you've been sitting or standing, and when the next move comes.",
-  "Any memory position can have its own gesture on the desk's button.",
-  "Memory positions reorder by drag and drop, and show as a grid or a list.",
-  "The desk reconnects by itself when it's back in range or Bluetooth is turned back on.",
-  "A badge on the menu bar icon and a notification when a new version is available.",
-  `Runs on macOS ${MIN_MACOS} and later (the previous version needed macOS 26), in ${LANGUAGES} languages.`,
+  `A desktop widget in two sizes, on macOS ${WIDGET_MIN_MACOS}: the desk's height, how long you've been sitting or standing, and one click to move the desk to a position.`,
+  "Each widget shows the positions you pick, in your order.",
+  "Bug fixes and improvements.",
 ];
 
 // Each tile shows an optimized thumbnail and links to the original PNG, which
@@ -72,6 +70,7 @@ const images = [
   { image: pauseWhile, file: "deskshift-posture-coach-pause-while.png", caption: "Posture Coach: countdown and Pause While" },
   { image: deskButtonGestures, file: "deskshift-desk-button-gestures.png", caption: "Desk button gestures" },
   { image: keyboardShortcuts, file: "deskshift-keyboard-shortcuts.png", caption: "Keyboard shortcuts" },
+  { image: desktopWidget, file: "deskshift-desktop-widget.png", caption: "The desktop widget" },
 ];
 ---
 
@@ -106,7 +105,8 @@ const images = [
       stopping, reaching under the desk and holding a button until it gets
       there. DeskShift is a native Mac app that removes that step. It lives in
       the menu bar, remembers up to 12 named heights, and moves the desk from a
-      tap, a keyboard shortcut, Spotlight, the Shortcuts app or Siri. Its
+      tap, a keyboard shortcut, a desktop widget, Spotlight, the Shortcuts app
+      or Siri. Its
       Posture Coach reminds you to switch positions, or moves the desk for you
       on a schedule you set, and waits while you're on a call. There is no
       account, no tracking and no subscription: the basics are free and Pro is

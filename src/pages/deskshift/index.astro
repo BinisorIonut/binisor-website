@@ -13,6 +13,7 @@ import {
   PRO_PRICE,
   VERSION,
   VERSION_DATE,
+  WIDGET_MIN_MACOS,
 } from "../../lib/deskshift";
 
 import icon from "../../assets/deskshift/icon.png";
@@ -26,10 +27,12 @@ import gestures from "../../assets/deskshift/screens/gestures.png";
 import menuBar from "../../assets/deskshift/screens/menu-bar.png";
 import automation from "../../assets/deskshift/screens/automation.png";
 import multiDesk from "../../assets/deskshift/screens/multi-desk.png";
+// The widget at 3x, both sizes, drawn by the app's own widget views.
+import widget from "../../assets/deskshift/screens/widget.png";
 
 const title = "DeskShift — Mac app for IKEA IDÅSEN standing desks";
 const description =
-  "Control your IKEA IDÅSEN standing desk from the Mac menu bar: memory positions, keyboard shortcuts and a Posture Coach that can move the desk for you. Free to try, one-time purchase.";
+  "Control your IKEA IDÅSEN standing desk from the Mac menu bar: memory positions, keyboard shortcuts, a desktop widget and a Posture Coach that can move the desk for you. Free to try, one-time purchase.";
 
 const features: Slide[] = [
   {
@@ -39,6 +42,14 @@ const features: Slide[] = [
     image: positions,
     alt: "DeskShift's position editor in the menu bar popover: a Stand position at 114.5 cm with its keyboard shortcut and Posture Coach schedule.",
     maxWidth: 27,
+  },
+  {
+    name: "Desktop widget",
+    title: "Your desk, on your desktop",
+    body: `A widget in two sizes shows the desk's height and how long you've been sitting or standing. One click moves the desk to the positions you pick. On macOS ${WIDGET_MIN_MACOS}.`,
+    image: widget,
+    alt: "The DeskShift widget in its two sizes: the desk at 74.0 cm, sitting for 27 of 45 minutes, with buttons for Sit and Stand, and in the larger size also Max and Min.",
+    maxWidth: 37,
   },
   {
     name: "Posture Coach",
@@ -95,36 +106,17 @@ const features: Slide[] = [
 // What the current version brought, by theme. From the app's own release notes.
 const news = [
   {
-    title: "A Posture Coach you can trust",
+    title: "A widget for your desktop",
     changes: [
-      "A 10-second countdown before every automatic move. Skip or snooze it from the menu bar, the notification or the desk's own button.",
-      "The coach waits while you're on a call or your Mac is locked, and can leave time away from your Mac out of your intervals.",
-      "The menu bar shows how long you've been sitting or standing, and when the next move comes.",
-    ],
-  },
-  {
-    title: "Your positions, your way",
-    changes: [
-      "Give any memory position its own gesture on the desk's button.",
-      "Drag positions into your order, and show them as a grid or a list.",
-      "Choose what each card and the menu bar show.",
+      "See your desk's height and how long you've been sitting or standing, without opening anything.",
+      "One click moves the desk to a position, and another stops it.",
+      "Two sizes, and you choose which positions each widget shows.",
+      `Needs macOS ${WIDGET_MIN_MACOS}.`,
     ],
   },
   {
     title: "Smoother every day",
-    changes: [
-      "Your desk reconnects by itself when it's back in range or Bluetooth is turned back on.",
-      "Release a held keyboard shortcut and the desk stops. Every time.",
-      "A badge in the menu bar tells you when a new version is ready.",
-    ],
-  },
-  {
-    title: "More Macs, more languages",
-    changes: [
-      `Runs on macOS ${MIN_MACOS} and later.`,
-      `Now in ${LANGUAGES} languages.`,
-      "Settings, redesigned: Menu Bar, Interactions, Keyboard Shortcuts, Automation and Posture Coach each have their own place.",
-    ],
+    changes: ["Bug fixes and improvements."],
   },
 ];
 
@@ -172,6 +164,7 @@ const matrix: Array<{ feature: string; desc: string; free: boolean }> = [
   { feature: "Spotlight search", desc: "Type a desk action into Spotlight and hit return.", free: false },
   { feature: "Shortcuts app integration", desc: "Make your desk a step in any automation you dream up.", free: false },
   { feature: "Global keyboard shortcuts", desc: "Jump to any position from anywhere in macOS — no clicking.", free: false },
+  { feature: "Widget", desc: "Your desk’s height and posture at a glance, and one click to move it (macOS 27).", free: false },
 
   { feature: "Lifetime Pro updates", desc: "Every Pro feature we add later stays unlocked for you. Forever.", free: false },
 ];
@@ -203,7 +196,7 @@ const faqs = [
   },
   {
     q: "Which Macs does it run on?",
-    a: `Any Mac with Bluetooth running macOS ${MIN_MACOS} or later.`,
+    a: `Any Mac with Bluetooth running macOS ${MIN_MACOS} or later. The desktop widget needs macOS ${WIDGET_MIN_MACOS}.`,
   },
 ];
 
@@ -331,7 +324,7 @@ const faqLd = {
         </p>
         <h2 class="mt-3 text-4xl font-semibold tracking-tight sm:text-5xl">What's new.</h2>
         <p class="mt-4 text-lg text-(--color-muted)">
-          The biggest update so far, and a free one: get it in the Mac App
+          Your desk, now on your desktop. A free update in the Mac App
           Store.
         </p>
       </div>

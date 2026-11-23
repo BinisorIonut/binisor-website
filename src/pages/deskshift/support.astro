@@ -1,6 +1,6 @@
 ---
 import Base from "../../layouts/Base.astro";
-import { MIN_MACOS } from "../../lib/deskshift";
+import { MIN_MACOS, WIDGET_MIN_MACOS } from "../../lib/deskshift";
 
 // The website contact form posts to the SAME Google Form the macOS app uses for
 // in-app feedback (see DeskShift's `FeedbackForm.deskShift` /
@@ -51,6 +51,10 @@ const faqs = [
   {
     q: "Why didn't Posture Coach move my desk?",
     a: "The coach holds off while you're on a call, and while your Mac is locked or its lid is closed. You choose which of these apply in Settings → Posture Coach → Pause While. It also rests outside the hours and days of your schedule. The coach's line in the menu bar popover shows how long you've been sitting or standing and when the next movement comes.",
+  },
+  {
+    q: "How do I add the DeskShift widget?",
+    a: `Right-click the desktop, choose Edit Widgets, search for DeskShift and drag Quick Control where you want it, in the small or the medium size. To choose its positions, right-click the widget and edit it. The widget needs macOS ${WIDGET_MIN_MACOS}. Without Pro it still shows the desk's height and how long you've been sitting or standing, and a click on a position opens DeskShift Pro.`,
   },
   {
     q: "Is the trial automatic?",
