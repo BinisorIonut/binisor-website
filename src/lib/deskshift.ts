@@ -15,8 +15,8 @@ export function appStoreUrl(campaign = "website"): string {
 }
 
 // The version that is live on the App Store, and the day it went live.
-export const VERSION = "1.4.0";
-export const VERSION_DATE = "November 23, 2026";
+export const VERSION = "1.5.0";
+export const VERSION_DATE = "December 1, 2026";
 
 // The desktop widget needs a newer macOS than the app.
 export const WIDGET_MIN_MACOS = "27";

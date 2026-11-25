@@ -16,13 +16,14 @@ import {
 // The App Store's own screenshots of the current version, 2880 × 1800.
 import icon from "../../assets/deskshift/icon.png";
 import menuBar from "../../assets/deskshift/menu-bar.png";
+import statistics from "../../assets/deskshift/statistics.png";
 import popoverMoving from "../../assets/deskshift/popover-moving.png";
-import positionEditor from "../../assets/deskshift/position-editor.png";
 import postureCoach from "../../assets/deskshift/posture-coach.png";
-import pauseWhile from "../../assets/deskshift/pause-while.png";
-import deskButtonGestures from "../../assets/deskshift/desk-button-gestures.png";
-import keyboardShortcuts from "../../assets/deskshift/keyboard-shortcuts.png";
 import desktopWidget from "../../assets/deskshift/desktop-widget.png";
+import statisticsYear from "../../assets/deskshift/statistics-year.png";
+import rhythm from "../../assets/deskshift/rhythm.png";
+import positionEditor from "../../assets/deskshift/position-editor.png";
+import desksAndGestures from "../../assets/deskshift/desks-and-gestures.png";
 
 const storeUrl = appStoreUrl("press");
 
@@ -42,6 +43,7 @@ const facts: Array<{ label: string; value: string; href?: string }> = [
 
 const highlights = [
   "Move the desk from the menu bar, with the live height next to the icon.",
+  "Statistics: how long you sit, stand and are away, by day, week, month and year, with a standing goal, its streak and Year in Desk. Free, and kept on the Mac only.",
   `A desktop widget in two sizes: the desk's height, how long you've been sitting or standing, and one click to move it (macOS ${WIDGET_MIN_MACOS}).`,
   "Up to 12 named memory positions, each with its own icon, as a grid or a list in the order you choose.",
   "Posture Coach: reminders to switch positions, or the desk moves itself on a schedule, after a 10-second countdown you can skip or snooze.",
@@ -54,23 +56,26 @@ const highlights = [
 
 // What the current version brought. From the app's own release notes.
 const news = [
-  `A desktop widget in two sizes, on macOS ${WIDGET_MIN_MACOS}: the desk's height, how long you've been sitting or standing, and one click to move the desk to a position.`,
-  "Each widget shows the positions you pick, in your order.",
-  "Bug fixes and improvements.",
+  "Statistics: see how you really use your standing desk, and stand more every day. A window shows how long you sit, stand and are away, for a day, a week, a month, a year or every day kept.",
+  "A standing goal with its streak, Rhythm (when in the day you stand), what became of the Posture Coach's reminders, records, the Desk Lab, and Year in Desk: the year in up to eight cards to keep or share.",
+  "Statistics is free and stays on the Mac: it isn't synced or sent anywhere, and can be paused, exported or deleted.",
+  "A redesigned menu bar popover: Today over the day's timeline, the Posture Coach in one row, the desks as a list, and every notice in one place.",
+  "Time between taps for the desk button's gestures, and a Show Statistics action for the Shortcuts app, Spotlight and Siri.",
 ];
 
 // Each tile shows an optimized thumbnail and links to the original PNG, which
 // downloads under `file`.
 const images = [
   { image: icon, file: "deskshift-icon-1024.png", caption: "App icon, 1024 × 1024" },
-  { image: menuBar, file: "deskshift-menu-bar.png", caption: "The desk in the menu bar" },
+  { image: menuBar, file: "deskshift-menu-bar.png", caption: "The desk and today, in the menu bar" },
+  { image: statistics, file: "deskshift-statistics.png", caption: "Statistics: a month" },
   { image: popoverMoving, file: "deskshift-moving.png", caption: "Moving to Stand" },
-  { image: positionEditor, file: "deskshift-position-editor.png", caption: "Editing a memory position" },
-  { image: postureCoach, file: "deskshift-posture-coach.png", caption: "Posture Coach" },
-  { image: pauseWhile, file: "deskshift-posture-coach-pause-while.png", caption: "Posture Coach: countdown and Pause While" },
-  { image: deskButtonGestures, file: "deskshift-desk-button-gestures.png", caption: "Desk button gestures" },
-  { image: keyboardShortcuts, file: "deskshift-keyboard-shortcuts.png", caption: "Keyboard shortcuts" },
+  { image: postureCoach, file: "deskshift-posture-coach.png", caption: "Posture Coach: the countdown to a move" },
   { image: desktopWidget, file: "deskshift-desktop-widget.png", caption: "The desktop widget" },
+  { image: statisticsYear, file: "deskshift-statistics-year.png", caption: "Statistics: the year" },
+  { image: rhythm, file: "deskshift-rhythm.png", caption: "Statistics: Rhythm" },
+  { image: positionEditor, file: "deskshift-position-editor.png", caption: "Editing a memory position" },
+  { image: desksAndGestures, file: "deskshift-desks-and-gestures.png", caption: "Desks and desk button gestures" },
 ];
 ---
 
@@ -108,7 +113,9 @@ const images = [
       tap, a keyboard shortcut, a desktop widget, Spotlight, the Shortcuts app
       or Siri. Its
       Posture Coach reminds you to switch positions, or moves the desk for you
-      on a schedule you set, and waits while you're on a call. There is no
+      on a schedule you set, and waits while you're on a call. Its Statistics
+      show how much you really stand, day by day and over the year, and never
+      leave the Mac. There is no
       account, no tracking and no subscription: the basics are free and Pro is
       a one-time purchase.
     </p>

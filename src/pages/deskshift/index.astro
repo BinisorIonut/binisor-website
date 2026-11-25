@@ -18,7 +18,11 @@ import {
 
 import icon from "../../assets/deskshift/icon.png";
 // Window captures of the current version, with their shadow and a transparent
-// background: Settings at 2x, the popover at 3x.
+// background, at 2x: Settings and Statistics as the window server draws them, the
+// popover on a solid panel (DeskShift's App Store renderer, 1.5.0).
+import today from "../../assets/deskshift/screens/today.png";
+import statistics from "../../assets/deskshift/screens/statistics.png";
+import rhythm from "../../assets/deskshift/screens/rhythm.png";
 import positions from "../../assets/deskshift/screens/positions.png";
 import postureCoach from "../../assets/deskshift/screens/posture-coach.png";
 import pauseWhile from "../../assets/deskshift/screens/pause-while.png";
@@ -32,15 +36,37 @@ import widget from "../../assets/deskshift/screens/widget.png";
 
 const title = "DeskShift — Mac app for IKEA IDÅSEN standing desks";
 const description =
-  "Control your IKEA IDÅSEN standing desk from the Mac menu bar: memory positions, keyboard shortcuts, a desktop widget and a Posture Coach that can move the desk for you. Free to try, one-time purchase.";
+  "Control your IKEA IDÅSEN standing desk from the Mac menu bar: memory positions, keyboard shortcuts, a desktop widget, a Posture Coach that can move the desk for you, and Statistics that show how much you really stand. Free to try, one-time purchase.";
 
 const features: Slide[] = [
+  {
+    name: "Today",
+    title: "Your desk and your day, in the menu bar",
+    body: "One click shows the desk's height, your positions, the Posture Coach's next move, and how long you've stood, sat and been away today, over the day's timeline.",
+    image: today,
+    alt: "The DeskShift popover: the desk at 74.0 cm, four memory positions, sitting for 27 of 45 minutes with the next stand at 7:38 PM, and today's totals: standing 2 hours 18 minutes, sitting 7 hours 25 minutes, away 45 minutes, over a timeline of the day.",
+    maxWidth: 27,
+  },
+  {
+    name: "Statistics",
+    title: "See how much you really stand",
+    body: "How long you sit, stand and are away, for a day, a week, a month or the year. Set a standing goal and keep your streak. Free, and it stays on your Mac.",
+    image: statistics,
+    alt: "The Statistics window for November: 38 hours standing, a 33-day streak, and a bar for every workday of the month against a goal of 1 hour 30 minutes.",
+  },
+  {
+    name: "Rhythm",
+    title: "When in the day you stand",
+    body: "Rhythm shows the hours you stand by weekday, when you first stand, and how long your stretches last. Records, the Desk Lab and Year in Desk tell the rest.",
+    image: rhythm,
+    alt: "Statistics' Rhythm: a clock of when you stand, a weekday-by-hour chart that peaks at 3 to 4 PM, a first stand around 10:24 AM and 38 minutes between switches.",
+  },
   {
     name: "Memory positions",
     title: "Every height you use, one tap away",
     body: "Save up to 12 positions of your own, name them, and jump to any of them from the menu bar. Drag them into your order, and show them as a grid or a list.",
     image: positions,
-    alt: "DeskShift's position editor in the menu bar popover: a Stand position at 114.5 cm with its keyboard shortcut and Posture Coach schedule.",
+    alt: "DeskShift's position editor in the menu bar popover: a Stand position at 114.5 cm with its height slider, keyboard shortcut and Posture Coach schedule.",
     maxWidth: 27,
   },
   {
@@ -56,7 +82,7 @@ const features: Slide[] = [
     title: "A standing desk that gets you standing",
     body: "Choose how long you sit and how long you stand. When it's time, the coach reminds you, or moves the desk for you. The menu bar shows how long you've been sitting and when the next move comes.",
     image: postureCoach,
-    alt: "Posture Coach settings: sitting for 27 minutes with the desk rising at 19:43, intervals of 45 minutes sitting and 15 standing, and a schedule from 09:00 to 20:00 every day.",
+    alt: "Posture Coach settings: sitting for 27 minutes with the next automatic move shown, intervals of 45 minutes sitting and 15 standing, and a schedule from 09:00 to 20:00 every day.",
   },
   {
     name: "Calls and countdown",
@@ -98,25 +124,38 @@ const features: Slide[] = [
     title: "Every desk you use",
     body: "Pair each desk once and switch between them in a tap. Your desk reconnects by itself when you're back in range, and iCloud keeps your desks and positions in step across your Macs.",
     image: multiDesk,
-    alt: "The menu bar popover with its sidebar open: a saved desk, connected, a button to scan for new desks, and the Posture Coach's status above the memory positions.",
-    maxWidth: 40,
+    alt: "The popover's Desks page: Home Desk, ready to connect, and Office Desk, connected, with a button to scan for new desks.",
+    maxWidth: 27,
   },
 ];
 
 // What the current version brought, by theme. From the app's own release notes.
 const news = [
   {
-    title: "A widget for your desktop",
+    title: "Meet Statistics",
     changes: [
-      "See your desk's height and how long you've been sitting or standing, without opening anything.",
-      "One click moves the desk to a position, and another stops it.",
-      "Two sizes, and you choose which positions each widget shows.",
-      `Needs macOS ${WIDGET_MIN_MACOS}.`,
+      "See how you really use your standing desk, and stand more every day.",
+      "How long you sit, stand and are away, for a day, a week, a month, a year or every day kept.",
+      "A standing goal with its streak, and a pause for holidays and sick days.",
+      "Rhythm, the Posture Coach's reminders, records, the Desk Lab and Year in Desk.",
+      "Free, and everything stays on your Mac: pause, export or delete it from the window.",
     ],
   },
   {
-    title: "Smoother every day",
-    changes: ["Bug fixes and improvements."],
+    title: "A redesigned menu bar",
+    changes: [
+      "Today: how long you stood, sat and were away, over the day's timeline; one click to Statistics.",
+      "The Posture Coach in one row: a ring that fills toward your next switch, and when it comes.",
+      "Your desks are a list: connect one, or click the connected desk, and its controls slide in.",
+      "Every notice in one place at the top, and Liquid Glass on macOS 26 and later.",
+    ],
+  },
+  {
+    title: "And more",
+    changes: [
+      "Time between taps: make it longer if your desk button gestures are sometimes missed.",
+      "Show Statistics from the Shortcuts app, Spotlight or Siri.",
+    ],
   },
 ];
 
@@ -124,7 +163,7 @@ const news = [
 const pillars = [
   {
     title: "Health first",
-    body: "Calm reminders and a Posture Coach that helps you move more without nagging.",
+    body: "Calm reminders, a Posture Coach that helps you move more, and Statistics that show it.",
     icon: '<path d="M3 12h4l2.5-6 4 12 2.5-6h5"/>',
   },
   {
@@ -153,6 +192,7 @@ const matrix: Array<{ feature: string; desc: string; free: boolean }> = [
   { feature: "iCloud sync across devices", desc: "Your desks and presets follow your Apple ID to every Mac.", free: true },
   { feature: "Manual up / down (hold to move)", desc: "Hold to raise or lower, release to stop. Simple.", free: true },
   { feature: "Sit and Stand memory positions", desc: "Two one-tap heights for the postures you use most.", free: true },
+  { feature: "Statistics", desc: "See how long you sit and stand each day, week, month and year, with a goal and its streak.", free: true },
 
   { feature: "Create your custom memory positions", desc: "Name and shape your day — sit, stand, lean, perch — with custom icons.", free: false },
   { feature: "Desk-button double-tap gesture", desc: "Double-tap the physical button to fly to Sit or Stand.", free: false },
@@ -165,6 +205,7 @@ const matrix: Array<{ feature: string; desc: string; free: boolean }> = [
   { feature: "Shortcuts app integration", desc: "Make your desk a step in any automation you dream up.", free: false },
   { feature: "Global keyboard shortcuts", desc: "Jump to any position from anywhere in macOS — no clicking.", free: false },
   { feature: "Widget", desc: "Your desk’s height and posture at a glance, and one click to move it (macOS 27).", free: false },
+  { feature: "Pause the streak", desc: "Keep your streak through holidays and sick days, past days too.", free: false },
 
   { feature: "Lifetime Pro updates", desc: "Every Pro feature we add later stays unlocked for you. Forever.", free: false },
 ];
@@ -184,15 +225,19 @@ const faqs = [
   },
   {
     q: "What happens when the trial ends?",
-    a: "DeskShift keeps working with the free features: manual up and down, Sit and Stand, launch at login, auto-reconnect, iCloud sync and multiple desks. The Pro features lock until you buy, and everything you set up is kept.",
+    a: "DeskShift keeps working with the free features: manual up and down, Sit and Stand, Statistics, launch at login, auto-reconnect, iCloud sync and multiple desks. The Pro features lock until you buy, and everything you set up is kept.",
   },
   {
     q: "Will the desk move on its own?",
     a: "Only on the schedule you set. Posture Coach can remind you, move the desk for you, or both, inside the hours and days you choose. A 10-second countdown comes before every automatic move, so you can skip or snooze it, and the coach waits while you're on a call or your Mac is locked.",
   },
   {
+    q: "Where are my statistics kept?",
+    a: "On your Mac, and only there: they aren't synced to iCloud or sent anywhere. The Statistics window can pause recording, export everything as JSON and CSV, or delete it all.",
+  },
+  {
     q: "What does DeskShift know about me?",
-    a: "Nothing. There is no account, no analytics and no tracking. Your desks and settings stay on your Mac and sync through your own iCloud. Feedback is sent only when you submit it.",
+    a: "Nothing. There is no account, no analytics and no tracking. Your desks and settings stay on your Mac and sync through your own iCloud, and your statistics never leave your Mac. Feedback is sent only when you submit it.",
   },
   {
     q: "Which Macs does it run on?",
@@ -271,8 +316,9 @@ const faqLd = {
         <span class="text-(--color-muted)">Move with a tap.</span>
       </h1>
       <p class="rise max-w-xl text-lg text-(--color-muted)" style="--rise-delay: 180ms">
-        Save the heights you use, switch with a tap or a shortcut, and let
-        Posture Coach raise the desk when you've sat long enough.
+        Save the heights you use, switch with a tap or a shortcut, let
+        Posture Coach raise the desk when you've sat long enough, and see how
+        much you really stand.
       </p>
 
       <div class="rise flex flex-wrap items-center gap-x-6 gap-y-4 pt-2" style="--rise-delay: 240ms">
